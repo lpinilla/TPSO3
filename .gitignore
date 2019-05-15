@@ -50,3 +50,22 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Pure OS Compilation files
+*.bin
+*.sys
+*.img
+*.qcow2
+*.vmdk
+*.ipch
+
+#Tasteful Framework
+*.tasty
+tasteful
+
+# Extra
+*.vscode/
+.vscode
+.bash_history
+.gdb_history
+tstex_modules
