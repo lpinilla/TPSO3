@@ -55,3 +55,12 @@ void * dequeue(queueADT * queue){
 size_t get_queue_size(queueADT * queue){
     return queue->size;
 }
+
+void print_queue(queueADT * queue, void (*print_func)(void * elem)) {
+    nodeADT * aux = queue->head;
+    while(aux!=NULL) {
+        print_func(aux->elem);
+        aux=aux->next;
+    }
+    return;
+}

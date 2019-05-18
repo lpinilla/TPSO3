@@ -15,5 +15,7 @@ void * dequeue(queue_t queue);
 void * peek(queue_t queue);
 // return size of the queue
 size_t get_queue_size(queue_t queue);
+// print queue 
+void print_queue(queue_t queue, void (*print_func)(void * elem))
 
 #endif
