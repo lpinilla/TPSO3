@@ -64,11 +64,11 @@ void run_process(process_t process){
 
 void kill_current_process(){
 
-    set_next_process();
+    process_t  aux = dequeue(scheduler);
     delete_process(aux);
-    aux = peek(scheduler);
+    set_next_process();
+    aux=peek(scheduler);
     _change_process(get_stack_pointer(aux));
-
     /*
     number_of_processes--;
 
@@ -99,10 +99,16 @@ static void set_next_process(){
         kill_current_process();
     }
     else if(pstate == P_WAITING){
+        requeue(scheduler);
         set_next_process();
     }
     else if(pstate == P_READY){
-        set_state(actual, P_RUNNING);
+        set_state(aux, P_RUNNING);
+    }
+    else if(pstate == P_RUNNING){
+        set_state(aux, P_READY);
+        requeue(scheduler);
+        set_next_process();
     }
     /*
     if((get_priority(current_process->element) % current_process->quantum) == 0){
