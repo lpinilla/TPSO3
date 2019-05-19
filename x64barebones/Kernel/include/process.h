@@ -29,6 +29,6 @@ void set_foreground_process(size_t pid);
 int is_current_process_foreground();
 void set_current_process_terminate();
 int get_priority(process_t process);
-int set_priority(process_t process, int priority);
+int set_priority(int pdi, int priority);
 
 #endif

@@ -17,7 +17,7 @@ void process_test(){
 
 	int child1 = sys_create_process(child1_process, "First Child Process", BACKGROUND);
 	int child2 = sys_create_process(child2_process, "Second Child Process", BACKGROUND);
-    /*
+
 	print_f("Current Processes: \n");
     sys_print_all_procceses();
     
@@ -31,5 +31,4 @@ void process_test(){
 
     print_f("Current Processes: \n");
     sys_print_all_procceses();
-    */
 }

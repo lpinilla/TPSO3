@@ -210,10 +210,10 @@ pstate_t get_state_id(size_t pid){
 	return all_processes[pid]->state;
 }
 
-int set_priority(process_t process, int priority) {
+int set_priority(int pid, int priority) {
 	if(priority >= PRIORITIES) {
-		return 0;
+		return -1;
 	}
-	process->priority=priority;
+	all_processes[pid]->priority=priority;
 	return priority;
 }
