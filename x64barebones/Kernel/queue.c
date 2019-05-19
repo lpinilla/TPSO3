@@ -1,32 +1,32 @@
 #include <queue.h>
 
-typedef nodeADT * node_t;
+typedef struct nodeADT * node_t;
 
-typedef struct node{
+typedef struct nodeADT{
     void * elem;
     node_t next;
 } nodeADT;
 
-typedef struct queue{
+typedef struct queueADT{
     size_t size;
     node_t head;
     node_t tail;
 } queueADT;
 
-queueADT * new_queue(){
-    queueADT * new = mem_alloc(sizeof(queueADT));
+queue_t new_queue(){
+    queue_t new = mem_alloc(sizeof(queueADT));
     new->size=0;
     new->head=NULL;
     new->tail=NULL;
     return new;
 }
 
-queueADT * enqueue(queueADT * queue, void * elem){
+queue_t enqueue(queue_t queue, void * elem){
     if(queue->head=NULL){
         queue->head=elem;
         queue->tail=elem;
     } else {
-        nodeADT * aux = mem_alloc(sizeof(nodeADT));
+        node_t aux = mem_alloc(sizeof(nodeADT));
         aux->elem=elem;
         aux->next=NULL;
         queue->tail->next=aux;
@@ -36,15 +36,15 @@ queueADT * enqueue(queueADT * queue, void * elem){
     return queue;
 }
 
-void * peek(queueADT * queue){
+void * peek(queue_t queue){
     return queue->head;
 }
 
-void * dequeue(queueADT * queue){
+void * dequeue(queue_t queue){
     if(queue->head==NULL){
         return NULL;
     }
-    nodeADT * aux_node = queue->head;
+    node_t aux_node = queue->head;
     void * aux_elem = aux_node->elem;
     queue->head=queue->head->next;
     free_mem(aux_node);
@@ -52,12 +52,12 @@ void * dequeue(queueADT * queue){
     return aux_elem;
 }
 
-size_t get_queue_size(queueADT * queue){
+size_t get_queue_size(queue_t queue){
     return queue->size;
 }
 
-void print_queue(queueADT * queue, void (*print_func)(void * elem)) {
-    nodeADT * aux = queue->head;
+void print_queue(queue_t queue, void (*print_func)(void * elem)) {
+    node_t aux = queue->head;
     while(aux!=NULL) {
         print_func(aux->elem);
         aux=aux->next;
