@@ -29,9 +29,6 @@ void reset_cursor(){
 
 //se puede especificar color de frente y de fondo
 void draw_char_w_front_and_back_color(int x, int y, char c, int foreground_color, int background_color){
-  if(!is_current_process_foreground()){
-    return;
-  }
   if(c=='\n')
     return new_line();
   if(c=='\b')
@@ -154,9 +151,6 @@ void draw_err_string(char * string){
 }
 
 void new_line(){
-  if(!is_current_process_foreground()){
-    return;
-  }
   if(y_cursor != (get_y_res()-CHAR_HEIGHT)){ //tal vez esto es lo que escribe abajo de la pantalla
     y_cursor += CHAR_HEIGHT;
   }else{
