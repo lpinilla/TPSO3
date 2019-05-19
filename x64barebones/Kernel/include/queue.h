@@ -20,5 +20,7 @@ void * peek(queue_t queue);
 size_t get_queue_size(queue_t queue);
 // print queue 
 void print_queue(queue_t queue, void (*print_func)(void * elem));
+// removes an element and add it again
+void requeue(queue_t queue);
 
 #endif

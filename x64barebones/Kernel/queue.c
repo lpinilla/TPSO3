@@ -56,6 +56,11 @@ size_t get_queue_size(queue_t queue){
     return queue->size;
 }
 
+void requeue(queue_t queue){
+    void * aux = dequeue(queue);
+    enqueue(queue, aux);
+}
+
 void print_queue(queue_t queue, void (*print_func)(void * elem)) {
     node_t aux = queue->head;
     while(aux!=NULL) {
