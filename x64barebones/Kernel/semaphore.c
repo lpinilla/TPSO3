@@ -86,7 +86,7 @@ int my_sem_post(int sid){
                 semaphore->last_waiting_process = NULL;
             }
             free_mem(aux);
-            set_state(p, P_READY);
+            set_state(p, P_RUNNING);
         }
     }
     semaphore->value++;

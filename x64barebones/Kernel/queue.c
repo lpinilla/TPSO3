@@ -69,3 +69,7 @@ void print_queue(queue_t queue, void (*print_func)(void * elem)) {
     }
     return;
 }
+
+void free_queue(queue_t queue){
+    free_mem(queue);
+}
