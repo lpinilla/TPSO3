@@ -7,15 +7,6 @@
 
 static void set_next_process();
 
-#define HIGH 0
-#define MEDIUM 1
-#define LOW 2
-
-#define PRIORITIES 3
-
-#define FALSE 0
-#define TRUE 1
-
 /*
 //LISTA DE NODOS CIRCULAR PARA LOS PROCESOS
 //TODO PROCESO SE AGREGA AL FINAL, SIGUIENDO EL ALGORITMO ROUND ROBIN
