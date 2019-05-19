@@ -70,7 +70,7 @@ void init(){
 	clear_screen();
 	//ACA ES DONDE SALTA A USERLAND, COMENTAR ESTA LINEA SI QUEREMOS PROBAR COSAS DE KERNEL
 	uint64_t start = (uint64_t)((EntryPoint)sampleCodeModuleAddress);
-	process_t process = create_process(start, "shell", 2);
+	process_t process = create_process(start, "shell", 0);
 	run_process(process);
 }
 

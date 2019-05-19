@@ -4,8 +4,6 @@
 #include <graphics.h> // testeando
 #include <lib.h>
 
-static unsigned long ticks = 0; //VER STATIC!
-
 void timer_handler() {
 	ticks++;
 }

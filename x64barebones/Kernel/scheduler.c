@@ -3,8 +3,18 @@
 #include <graphics.h>
 #include <interrupts.h>
 #include <queue.h>
+#include <time.h>
 
 static void set_next_process();
+
+#define HIGH 0
+#define MEDIUM 1
+#define LOW 2
+
+#define PRIORITIES 3
+
+#define FALSE 0
+#define TRUE 1
 
 /*
 //LISTA DE NODOS CIRCULAR PARA LOS PROCESOS
@@ -15,10 +25,21 @@ static node_t last_process;
 static size_t number_of_processes;
 */
 
-queue_t scheduler;
+typedef struct schedulerADT * scheduler_t;
+
+typedef struct schedulerADT {
+    queue_t procceses[PRIORITIES];
+    process_t current_process;
+} schedulerADT;
+
+static scheduler_t scheduler;
 
 void init_scheduler(){
-    scheduler = new_queue();
+    scheduler = mem_alloc(sizeof(schedulerADT));
+    for(int i=0; i<PRIORITIES; i++){
+        scheduler->procceses[i]= new_queue();
+    }
+    scheduler-> current_process = NULL;
     /*
     current_process = NULL;
     last_process = NULL;
@@ -28,12 +49,12 @@ void init_scheduler(){
 
 void run_process(process_t process){
 
-    if(get_queue_size(scheduler)==0) {
-        enqueue(scheduler, process);
+    if(scheduler->current_process==NULL) {
+        scheduler->current_process=process;
         set_state(process, P_RUNNING);
         _change_process(get_stack_pointer(process));
     } else {
-        enqueue(scheduler, process);
+        enqueue(scheduler->procceses[get_priority(process)], process);
     }
 
     /*
@@ -62,12 +83,13 @@ void run_process(process_t process){
     */
 }
 
+
 void kill_current_process(){
 
-    process_t  aux = dequeue(scheduler);
+    process_t aux=get_current_process();
     delete_process(aux);
     set_next_process();
-    aux=peek(scheduler);
+    aux=get_current_process();
     _change_process(get_stack_pointer(aux));
     /*
     number_of_processes--;
@@ -89,17 +111,42 @@ void kill_current_process(){
     */
 }
 
+
+
+int select_time_queue() {
+    int rest = ticks % 10;
+    if(rest < 5){
+        return HIGH;
+    } else if (rest < 8){
+        return MEDIUM;
+    } else {
+        return LOW;
+    }
+}
+
+int select_queue() {
+    int priority_next = select_time_queue();
+    if(get_queue_size(scheduler->procceses[priority_next])>0)
+        return scheduler->procceses[priority_next];
+    else
+        return scheduler->procceses[HIGH];
+}
+
 static void set_next_process(){
+    queue_t next_queue = select_queue();
 
-    process_t aux = peek(scheduler);
+    pstate_t pstate = get_state(scheduler->current_process);
 
-    pstate_t pstate = get_state(aux);
+    process_t aux = scheduler->current_process;
 
     if(pstate == P_TERMINATE){
-        kill_current_process();
+        delete_process(aux);
+        scheduler->current_process = dequeue(next_queue);
+        set_next_process();
     }
     else if(pstate == P_WAITING){
-        requeue(scheduler);
+        enqueue(scheduler->procceses[get_priority(scheduler->current_process)], aux);
+        scheduler->current_process = dequeue(next_queue);
         set_next_process();
     }
     else if(pstate == P_READY){
@@ -107,7 +154,8 @@ static void set_next_process(){
     }
     else if(pstate == P_RUNNING){
         set_state(aux, P_READY);
-        requeue(scheduler);
+        enqueue(scheduler->procceses[get_priority(scheduler->current_process)], aux);
+        scheduler->current_process = dequeue(next_queue);
         set_next_process();
     }
     /*
@@ -137,15 +185,11 @@ static void set_next_process(){
 //Esto se llama desde el iqr handler que seria mas rapido que el timer creo, asi nos acercamos
 // lo mas posible a un quantum como pide la consigna
 uint64_t switch_process(uint64_t stack_pointer){
-    if(get_queue_size(scheduler)>1) {
-        process_t actual = peek(scheduler);
-        set_stack_pointer(actual, stack_pointer);
-        set_next_process();
-        actual = peek(scheduler);
-        return get_stack_pointer(actual);
-    } else {
-        return stack_pointer;
-    }
+    process_t actual = get_current_process();
+    set_stack_pointer(actual, stack_pointer);
+    set_next_process();
+    actual = get_current_process();
+    return get_stack_pointer(actual);
     /*
     if(number_of_processes>1){
 
@@ -162,7 +206,9 @@ uint64_t switch_process(uint64_t stack_pointer){
 }
 
 void print_current_processes(){
-    print_queue(scheduler, print_process);
+    for(int i=0; i<PRIORITIES; i++){
+        print_queue(scheduler->procceses[i], print_process);
+    }
     /*
     node_t aux = first_process;
     for(int i = 0; i < number_of_processes; i++){
@@ -173,6 +219,5 @@ void print_current_processes(){
 }
 
 process_t get_current_process(){
-    //return (process_t)current_process->element;
-    return (process_t)peek(scheduler);
+    return  scheduler->current_process;
 }
