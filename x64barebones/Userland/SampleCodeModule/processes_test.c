@@ -5,13 +5,13 @@ void child2_process();
 
 void child1_process(){
     while(1){
-
+        print_f("Hola soy el proceso 1 \n");
     }
 }
 
 void child2_process(){
     while(1){
-
+        print_f("Hola soy el proceso 2 \n");
     }
 }
 
@@ -19,16 +19,19 @@ void process_test(){
 
 	int child1 = sys_create_process(child1_process, "First Child Process", BACKGROUND);
 	int child2 = sys_create_process(child2_process, "Second Child Process", BACKGROUND);
-
+    /*
 	print_f("Current Processes: \n");
     sys_print_all_procceses();
-
+    
     print_f("Killing process number: %d\n", child1);
     sys_kill_process(child1);
 
     print_f("Killing process number: %d\n", child2);
     sys_kill_process(child2);
 
+    sys_sleep(10);
+
     print_f("Current Processes: \n");
     sys_print_all_procceses();
+    */
 }
