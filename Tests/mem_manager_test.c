@@ -82,7 +82,7 @@ void list_initial_populate_test(){
     memset(mem, 0, n_of_elems * sizeof(int));
     load_free_lists(mem, 0, n_of_lists);
     aux = PAGE_SIZE << n_of_lists;
-    populate_free_list(aux, 0, n_of_lists - (n_of_lists / PAGE_SIZE));    
+    populate_free_list(aux, 0, n_of_lists);    
     for(int i = 0; !asst && i < n_of_lists; i++, aux >>=1){
         if(*free_lists[i] != aux) asst = 1;
     }
@@ -97,7 +97,7 @@ void list_initial_populate_test2(){
     memset(mem, 0, n_of_elems * sizeof(int));
     load_free_lists(mem, 0, n_of_lists);
     aux = PAGE_SIZE << n_of_lists;
-    populate_free_list(aux, 0, n_of_lists - (n_of_lists / PAGE_SIZE));    
+    populate_free_list(aux, 0, n_of_lists);    
     for(int i = 0; !asst && i < n_of_lists; i++, aux >>=1){
         if(*free_lists[i] != aux) asst = 1;
     }
@@ -112,7 +112,7 @@ void list_initial_populate_test3(){
     memset(mem, 0, n_of_elems * sizeof(int));
     load_free_lists(mem, 0, n_of_lists);
     aux = PAGE_SIZE << n_of_lists;
-    populate_free_list(aux, 0, n_of_lists - (n_of_lists / PAGE_SIZE));    
+    populate_free_list(aux, 0, n_of_lists);    
     for(int i = 0; !asst && i < n_of_lists; i++, aux >>=1){
         if(*free_lists[i] != aux) asst = 1;
     }
