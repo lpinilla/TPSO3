@@ -22,5 +22,7 @@ size_t get_queue_size(queue_t queue);
 void print_queue(queue_t queue, void (*print_func)(void * elem));
 // removes an element and add it again
 void requeue(queue_t queue);
+// free de queue WATCH OUT FOR THE NODES, YOU NEED TO FREE THEM ONE BY ONE WITH DEQUEUE BECASE WE'RE NOT ALLOCATING THEM, IT'S YOUR JOB
+void free_queue(queue_t queue);
 
 #endif
