@@ -354,21 +354,13 @@ void alloc_test2(){
 }
 
 void alloc_test3(){
-    size_t total_size = ((1<<15)-1); //16KB (lo actualiza a 16)
-    void * mem = malloc(total_size), * requested = NULL, *r2 = NULL;
+    size_t total_size = ((1<<15)); //32KB
+    void * mem = malloc(total_size), * r1 = NULL, *r2 = NULL;
     int ret = 0;
     initialize_list(mem, total_size);
-    printf("Before malloc\n");
-    print_mem();
-    requested = mem_alloc(8);
-    ret = requested != NULL;
-    printf("r1 %p \n", requested);
-    printf("First malloc\n");
-    print_mem();
-    printf("Second malloc\n");
+    r1 = mem_alloc(8);
+    ret = r1 != NULL;
     r2 = mem_alloc(8);
-    printf("r1 %p \n", r2);
-    print_mem();
     ret += r2 != NULL,
     free(mem);
     assert_true(ret == 2);

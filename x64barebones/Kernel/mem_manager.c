@@ -20,23 +20,24 @@ void * memory_base(){
 
 void * mem_alloc(size_t size){
     int index = 0, free_space_offset = 0;
+    size_t aux = 0;
     if(size >= PAGE_SIZE){
         //arreglar el tamaño (+ 1 int) si es igual a una página o no es potencia de 2
         if(size == PAGE_SIZE || !IS_POWER_OF_2(size+sizeof(int))){
-            size = fix_size(size+sizeof(int));
+            aux = fix_size(size+sizeof(int));
         }
     }else{
-        size = PAGE_SIZE;
+        aux = PAGE_SIZE;
     }
     //buscar en la lista de ese tamaño si hay un espacio libre
     //buscar a qué lista le corresponde
-    index = powers_in_between(size, max_partition_size);
+    index = powers_in_between(aux, max_partition_size);
     free_space_offset = look_for_space_in_list(index);
-    if(free_space_offset){ //encontramos un hueco
-        *((char *) memory_base() + free_space_offset) = size;
+    if(free_space_offset != -1){ //encontramos un hueco
+        *((char *) memory_base() + free_space_offset) = aux;
         return (void *) ((char *) memory_base() + free_space_offset + sizeof(int));
     }//no encontramos hueco
-    if(split_upper_level(size<<1, 0) == -1) return NULL; //no hay memoria disponible
+    if(split_upper_level(aux<<1, 0) == -1) return NULL; //no hay memoria disponible
     return mem_alloc(size); //se dividió, intentamos de nuevo el pedido
 }
 
