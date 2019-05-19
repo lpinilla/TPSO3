@@ -22,13 +22,13 @@ queue_t new_queue(){
 }
 
 queue_t enqueue(queue_t queue, void * elem){
-    if(queue->head=NULL){
-        queue->head=elem;
-        queue->tail=elem;
+    node_t aux = mem_alloc(sizeof(nodeADT));
+    aux->elem=elem;
+    aux->next=NULL;
+    if(queue->head==NULL){
+        queue->head=aux;
+        queue->tail=aux;
     } else {
-        node_t aux = mem_alloc(sizeof(nodeADT));
-        aux->elem=elem;
-        aux->next=NULL;
         queue->tail->next=aux;
         queue->tail=aux;
     }
@@ -37,7 +37,7 @@ queue_t enqueue(queue_t queue, void * elem){
 }
 
 void * peek(queue_t queue){
-    return queue->head;
+    return queue->head->elem;
 }
 
 void * dequeue(queue_t queue){
