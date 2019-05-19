@@ -51,7 +51,13 @@ size_t fix_size(size_t size);
 /*Función que busca en la lista de ídice i un espacio libre*/
 int look_for_space_in_list(int index);
 
+//Función para dividir un espacio de memoria en 2
+int split_upper_level(size_t desired,int levels);
+
+void recursive_divide(int index_in_list, int levels);
+
 int * free_lists[20];
-size_t max_partition_size;
+size_t max_partition_size, total_mem_size;
+int n_of_lists;
 
 #endif

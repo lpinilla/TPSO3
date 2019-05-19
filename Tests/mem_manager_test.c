@@ -20,9 +20,15 @@ void power_of_2_check_test();
 void power_of_2_check_test2();
 void power_of_2_check_test3();
 void alloc_free_list_available_test();
+void recursive_divide_test();
+void recursive_divide_test2();
+void recursive_divide_test3();
+void look_space_in_list_test();
+void look_space_in_list_test2();
+void look_space_in_list_test3();
 
 //helper functions
-void print_mem(size_t total_size);
+void print_mem();
 
 int main(void){
     create_suite("Testing the Memory Manager");
@@ -44,6 +50,12 @@ int main(void){
     add_test(power_of_2_check_test2);
     add_test(power_of_2_check_test3);
     add_test(alloc_free_list_available_test);
+    add_test(recursive_divide_test);
+    add_test(recursive_divide_test2);
+    add_test(recursive_divide_test3);
+    add_test(look_space_in_list_test);
+    add_test(look_space_in_list_test2);
+    add_test(look_space_in_list_test3);
     //correr la suite
     run_suite();
     //liberar los espacios
@@ -185,10 +197,80 @@ void alloc_free_list_available_test(){
     assert_true(ret);
 }
 
-//helper function
+void recursive_divide_test(){
+    size_t total_size = (1<<15); //32KB
+    void * mem = malloc(total_size);
+    int ret = 0;
+    initialize_list(mem, total_size);
+    recursive_divide(1, 1);
+    ret = free_lists[2][0] == 8192;
+    ret += free_lists[2][1] == 8192 + 4096;
+    free(mem);
+    assert_true(ret == 2);
+}
 
-void print_mem(size_t total_size){
-    for(int i = 0; i < powers_in_between(PAGE_SIZE, total_size); i++){
+void recursive_divide_test2(){
+    size_t total_size = (1<<15); //32KB
+    void * mem = malloc(total_size);
+    int ret = 0;
+    initialize_list(mem, total_size);
+    recursive_divide(0, 1);
+    ret = free_lists[1][0] == 16384;
+    ret += free_lists[1][1] == 16384 + 8192;
+    free(mem);
+    assert_true(ret == 2);
+}
+
+void recursive_divide_test3(){
+    size_t total_size = (1<<15); //32KB
+    void * mem = malloc(total_size);
+    int ret = 0;
+    initialize_list(mem, total_size);
+    recursive_divide(0, 2);
+    ret = free_lists[0][0] == 0;
+    ret += free_lists[1][0] == 0;
+    ret += free_lists[1][1] == 24576;
+    ret += free_lists[2][0] == 16384;
+    ret += free_lists[2][1] == 16384 + 4096;
+    free(mem);
+    assert_true(ret == 5);
+}
+
+void look_space_in_list_test(){
+    size_t total_size = (1<<15); //32KB
+    void * mem = malloc(total_size);
+    int aux = 0;
+    initialize_list(mem, total_size);
+    aux = look_for_space_in_list(0);
+    free(mem);
+    assert_true(aux == 1<<14);
+}
+
+void look_space_in_list_test2(){
+    size_t total_size = (1<<15); //32KB
+    void * mem = malloc(total_size);
+    int aux = 0;
+    initialize_list(mem, total_size);
+    look_for_space_in_list(0);
+    aux = look_for_space_in_list(0);
+    free(mem);
+    assert_true(aux == -1);
+}
+
+void look_space_in_list_test3(){
+    size_t total_size = (1<<15); //32KB
+    void * mem = malloc(total_size);
+    int aux = 0;
+    initialize_list(mem, total_size);
+    int index = powers_in_between(1<<13, max_partition_size);
+    aux = look_for_space_in_list(index);
+    free(mem);
+    assert_true(aux == 1<<13);
+}
+
+//helper function
+void print_mem(){
+    for(int i = 0; i < powers_in_between(PAGE_SIZE, total_mem_size); i++){
         for(int j = 0; j < (1<<i);j++){
             printf("%d ", free_lists[i][j]);
         }
