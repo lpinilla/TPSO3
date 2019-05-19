@@ -1,8 +1,5 @@
 #include <pipe.h>
 
-#define READ 0
-#define WRITE 1
-
 typedef enum {READ, WRITE} pipe_mode;
 
 typedef struct pipeADT * pipe_t;
@@ -10,7 +7,8 @@ typedef struct pipeADT * pipe_t;
 typedef struct pipeADT {
     char * name[MAX_PIPE_NAME];
     char * data[PIPE_DATA_SIZE];
-    int offset;
+    int * offset;
+    pipe_mode mode;
 } pipeADT;
 
 static pipe_t[MAX_PIPES] global_pipes;
