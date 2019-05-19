@@ -86,9 +86,12 @@ void run_process(process_t process){
 
 void kill_current_process(){
 
+    queue_t next_queue = select_queue();
+
     process_t aux=get_current_process();
-    delete_process(aux);
+    scheduler->current_process = dequeue(next_queue);
     set_next_process();
+    delete_process(aux);
     aux=get_current_process();
     _change_process(get_stack_pointer(aux));
     /*
@@ -114,7 +117,7 @@ void kill_current_process(){
 
 
 int select_time_queue() {
-    int rest = ticks % 10;
+    int rest = ticks_elapsed() % 10;
     if(rest < 5){
         return HIGH;
     } else if (rest < 8){
@@ -140,9 +143,7 @@ static void set_next_process(){
     process_t aux = scheduler->current_process;
 
     if(pstate == P_TERMINATE){
-        delete_process(aux);
-        scheduler->current_process = dequeue(next_queue);
-        set_next_process();
+        kill_current_process();
     }
     else if(pstate == P_WAITING){
         enqueue(scheduler->procceses[get_priority(scheduler->current_process)], aux);
@@ -206,6 +207,7 @@ uint64_t switch_process(uint64_t stack_pointer){
 }
 
 void print_current_processes(){
+    print_process(scheduler->current_process);
     for(int i=0; i<PRIORITIES; i++){
         print_queue(scheduler->procceses[i], print_process);
     }

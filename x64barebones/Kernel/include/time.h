@@ -1,6 +1,5 @@
 #ifndef _TIME_H_
 #define _TIME_H_
-static unsigned long ticks = 0; //VER STATIC!
 
 void timer_handler();
 int ticks_elapsed();
