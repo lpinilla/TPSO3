@@ -12,6 +12,12 @@ void free_lists_creation_test2();
 void list_initial_populate_test();
 void list_initial_populate_test2();
 void list_initial_populate_test3();
+void fix_size_test();
+void fix_size_test2();
+void fix_size_test3();
+void power_of_2_check_test();
+void power_of_2_check_test2();
+void power_of_2_check_test3();
 
 int main(void){
     create_suite("Testing the Memory Manager");
@@ -25,6 +31,12 @@ int main(void){
     add_test(list_initial_populate_test);
     add_test(list_initial_populate_test2);
     add_test(list_initial_populate_test3);
+    add_test(fix_size_test);
+    add_test(fix_size_test2);
+    add_test(fix_size_test3);
+    add_test(power_of_2_check_test);
+    add_test(power_of_2_check_test2);
+    add_test(power_of_2_check_test3);
     //correr la suite
     run_suite();
     //liberar los espacios
@@ -117,4 +129,28 @@ void list_initial_populate_test3(){
         if(*free_lists[i] != aux) asst = 1;
     }
     assert_true(!asst);
+}
+
+void fix_size_test(){
+    assert_true(fix_size(7) == 8);
+}
+
+void fix_size_test2(){
+    assert_true(fix_size(0) == 1);
+}
+
+void fix_size_test3(){
+    assert_true(fix_size(16) == 32);
+}
+
+void power_of_2_check_test(){
+    assert_true(IS_POWER_OF_2(2));
+}
+
+void power_of_2_check_test2(){
+    assert_false(IS_POWER_OF_2(3));
+}
+
+void power_of_2_check_test3(){
+    assert_false(IS_POWER_OF_2(15));
 }
