@@ -1,9 +1,4 @@
 #include <scheduler.h>
-#include <mem_manager.h>
-#include <graphics.h>
-#include <interrupts.h>
-#include <queue.h>
-#include <time.h>
 
 static void set_next_process();
 

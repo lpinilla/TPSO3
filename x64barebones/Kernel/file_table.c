@@ -1,10 +1,10 @@
 #include <file_table.h>
-#include <mem_manager.h>
-#include <lib.h>
+/*
+typedef struct file_entryADT * file_entry_t;
 
-static file_entry_t[MAX_ENTRIES] file_table;
+static file_entry_t file_table[MAX_ENTRIES];
 
-typedef struct file_entry {
+typedef struct file_entryADT {
     char * path[MAX_PATH];
     void * entry;
     int offset;
@@ -28,5 +28,6 @@ int add_entry(char * path, void * entry, mode_t mode) {
             found = i;
         }
     }
-    return i;
+    return found;
 }
+*/
