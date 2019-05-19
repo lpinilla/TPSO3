@@ -64,7 +64,6 @@ void run_process(process_t process){
 
 void kill_current_process(){
 
-    process_t aux = dequeue(scheduler);
     set_next_process();
     delete_process(aux);
     aux = peek(scheduler);
@@ -92,9 +91,9 @@ void kill_current_process(){
 
 static void set_next_process(){
 
-    process_t actual = peek(scheduler);
+    process_t aux = peek(scheduler);
 
-    pstate_t pstate = get_state(actual);
+    pstate_t pstate = get_state(aux);
 
     if(pstate == P_TERMINATE){
         kill_current_process();
@@ -169,5 +168,5 @@ void print_current_processes(){
 
 process_t get_current_process(){
     //return (process_t)current_process->element;
-    return peek(scheduler);
+    return (process_t)peek(scheduler);
 }
