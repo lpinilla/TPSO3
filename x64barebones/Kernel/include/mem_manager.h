@@ -2,6 +2,7 @@
 #define _MEM_MANAGER_H_
 
 #include <stddef.h>
+#include <lib.h>
 #include "graphics.h"
 
 enum STATUS {P = 0, F = 1};
