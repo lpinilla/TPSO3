@@ -24,5 +24,7 @@ void print_queue(queue_t queue, void (*print_func)(void * elem));
 void requeue(queue_t queue);
 // free de queue WATCH OUT FOR THE NODES, YOU NEED TO FREE THEM ONE BY ONE WITH DEQUEUE BECASE WE'RE NOT ALLOCATING THEM, IT'S YOUR JOB
 void free_queue(queue_t queue);
+// recibes a find function that return true if is the element we're searching for, and returns that elem if not returns NULL
+void * find_queue(queue_t queue, int (*find_func)(void * elem));
 
 #endif
