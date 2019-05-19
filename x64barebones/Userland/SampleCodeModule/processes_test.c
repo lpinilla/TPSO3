@@ -5,13 +5,11 @@ void child2_process();
 
 void child1_process(){
     while(1){
-        print_f("Hola soy el proceso 1 \n");
     }
 }
 
 void child2_process(){
     while(1){
-        print_f("Hola soy el proceso 2 \n");
     }
 }
 
