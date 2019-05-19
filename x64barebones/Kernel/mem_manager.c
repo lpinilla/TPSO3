@@ -35,7 +35,7 @@ void * mem_alloc(size_t size){
     if(free_space_offset){ //encontramos un hueco
         *((char *) memory_base() + free_space_offset) = size;
         return (void *) ((char *) memory_base() + free_space_offset + sizeof(int));
-    }
+    }//no encontramos hueco
     if(split_upper_level(size<<1, 0) == -1) return NULL; //no hay memoria disponible
     return mem_alloc(size); //se dividió, intentamos de nuevo el pedido
 }
@@ -49,7 +49,7 @@ int split_upper_level(size_t desired, int levels){
     }
     //encontramos un espacio de memoria que podemos dividir
     free_lists[index_in_list+1][0] = desired_val;
-    free_lists[index_in_list+1][1] = desired_val + (1<<(desired>>1));
+    free_lists[index_in_list+1][1] = desired_val + (desired_val>>1);
     recursive_divide(index_in_list+1, levels);
     return 0;
 }

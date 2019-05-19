@@ -26,6 +26,13 @@ void recursive_divide_test3();
 void look_space_in_list_test();
 void look_space_in_list_test2();
 void look_space_in_list_test3();
+void split_upper_level_test();
+void split_upper_level_test2();
+void init_list_test();
+void init_list_test2();
+void alloc_test();
+void alloc_test2();
+void alloc_test3();
 
 //helper functions
 void print_mem();
@@ -56,6 +63,13 @@ int main(void){
     add_test(look_space_in_list_test);
     add_test(look_space_in_list_test2);
     add_test(look_space_in_list_test3);
+    add_test(split_upper_level_test);
+    add_test(split_upper_level_test2);
+    add_test(init_list_test);
+    add_test(init_list_test2);
+    add_test(alloc_test);
+    add_test(alloc_test2);
+    add_test(alloc_test3);
     //correr la suite
     run_suite();
     //liberar los espacios
@@ -266,6 +280,98 @@ void look_space_in_list_test3(){
     aux = look_for_space_in_list(index);
     free(mem);
     assert_true(aux == 1<<13);
+}
+
+void split_upper_level_test(){
+    size_t total_size = (1<<15); //32KB
+    void * mem = malloc(total_size);
+    int ret = 0;
+    initialize_list(mem, total_size);
+    split_upper_level(1<<13,0);
+    ret = free_lists[2][0] == 8192;
+    ret += free_lists[2][1] == 8192 + 4096;
+    free(mem);
+    assert_true(ret == 2);
+}
+
+void split_upper_level_test2(){
+    size_t total_size = (1<<15); //32KB
+    void * mem = malloc(total_size);
+    int ret = 0;
+    initialize_list(mem, total_size);
+    split_upper_level(1<<14,1);
+    ret = free_lists[0][0] == 0;
+    ret += free_lists[1][0] == 0;
+    ret += free_lists[1][1] == 24576;
+    ret += free_lists[2][0] == 16384;
+    ret += free_lists[2][1] == 16384 + 4096;
+    free(mem);
+    assert_true(ret == 5);
+}
+
+void init_list_test(){
+    size_t total_size = (1<<15); //32KB
+    void * mem = malloc(total_size);
+    int ret = 0;
+    initialize_list(mem, total_size);
+    ret = total_mem_size == total_size;
+    ret += n_of_lists == 3;
+    free(mem);
+    assert_true(ret == 2);
+}
+
+void init_list_test2(){
+    size_t total_size = ((1<<15)-1); //16KB (lo actualiza a 16)
+    void * mem = malloc(total_size);
+    int ret = 0;
+    initialize_list(mem, total_size);
+    ret = total_mem_size == (1<<15);
+    ret += n_of_lists == 3;
+    free(mem);
+    assert_true(ret == 2);
+}
+
+void alloc_test(){
+    size_t total_size = ((1<<15)-1); //16KB (lo actualiza a 16)
+    void * mem = malloc(total_size), * requested = NULL;
+    int ret = 0;
+    initialize_list(mem, total_size);
+    requested = mem_alloc(PAGE_SIZE);
+    ret = requested != NULL;
+    free(mem);
+    assert_true(ret);
+}
+
+void alloc_test2(){
+    size_t total_size = ((1<<15)-1); //16KB (lo actualiza a 16)
+    void * mem = malloc(total_size), * requested = NULL;
+    int ret = 0;
+    initialize_list(mem, total_size);
+    requested = mem_alloc(8);
+    ret = requested != NULL;
+    free(mem);
+    assert_true(ret);
+}
+
+void alloc_test3(){
+    size_t total_size = ((1<<15)-1); //16KB (lo actualiza a 16)
+    void * mem = malloc(total_size), * requested = NULL, *r2 = NULL;
+    int ret = 0;
+    initialize_list(mem, total_size);
+    printf("Before malloc\n");
+    print_mem();
+    requested = mem_alloc(8);
+    ret = requested != NULL;
+    printf("r1 %p \n", requested);
+    printf("First malloc\n");
+    print_mem();
+    printf("Second malloc\n");
+    r2 = mem_alloc(8);
+    printf("r1 %p \n", r2);
+    print_mem();
+    ret += r2 != NULL,
+    free(mem);
+    assert_true(ret == 2);
 }
 
 //helper function
