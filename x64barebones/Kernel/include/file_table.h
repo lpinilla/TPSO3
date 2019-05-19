@@ -2,7 +2,7 @@
 #define _FILE_TABLE_H
 
 #define MAX_ENTRIES 256
-#define PIPE_BUFFER 4096
+#define MAX_PATH 30
 
 typedef enum {READ_ONLY, WRITE_ONLY} mode_t;
 
