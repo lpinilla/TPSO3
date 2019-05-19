@@ -73,3 +73,14 @@ void print_queue(queue_t queue, void (*print_func)(void * elem)) {
 void free_queue(queue_t queue){
     free_mem(queue);
 }
+
+void * find_queue(queue_t queue, int (*find_func)(void * elem)) {
+    node_t aux = queue->head;
+    while(aux!=NULL){
+        if(find_func(aux->elem)){
+            return aux->elem;
+        }
+        aux=aux->next;
+    }
+    return NULL;
+}
