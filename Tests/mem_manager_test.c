@@ -34,6 +34,8 @@ void alloc_test();
 void alloc_test2();
 void alloc_test3();
 void alloc_test4();
+void alloc_test5();
+void alloc_test6();
 
 //helper functions
 void print_mem();
@@ -72,6 +74,8 @@ int main(void){
     add_test(alloc_test2);
     add_test(alloc_test3);
     add_test(alloc_test4);
+    add_test(alloc_test5);
+    add_test(alloc_test6);
     //correr la suite
     run_suite();
     //liberar los espacios
@@ -379,6 +383,34 @@ void alloc_test4(){
     ret += r2 != NULL;
     r3 = mem_alloc(8);
     ret += r3 != NULL;
+    free(mem);
+    assert_true(ret == 3);
+}
+
+void alloc_test5(){
+    size_t total_size = ((1<<15)); //32KB
+    void * mem = malloc(total_size), * r1 = NULL, *r2 = NULL;
+    int ret = 0;
+    initialize_list(mem, total_size);
+    r1 = mem_alloc(1<<13);
+    ret = r1 != NULL;
+    r2 = mem_alloc(1<<13);
+    ret += r2 == NULL;
+    free(mem);
+    assert_true(ret == 2);
+}
+
+void alloc_test6(){
+    size_t total_size = ((1<<15)); //32KB
+    void * mem = malloc(total_size), * r1 = NULL, *r2 = NULL, * r3 = NULL;
+    int ret = 0;
+    initialize_list(mem, total_size);
+    r1 = mem_alloc(1<<13);
+    ret = r1 != NULL;
+    r2 = mem_alloc(1<<12);
+    ret += r2 != NULL;
+    r3 = mem_alloc(1<<12);
+    ret += r3 == NULL;
     free(mem);
     assert_true(ret == 3);
 }

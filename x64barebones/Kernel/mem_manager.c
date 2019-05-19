@@ -43,6 +43,7 @@ void * mem_alloc(size_t size){
 
 int split_upper_level(size_t desired, int levels){
     int index_in_list = powers_in_between(desired, max_partition_size);
+    if(index_in_list == -1) return -1;
     int desired_val = look_for_space_in_list(index_in_list);
     if(desired_val == -1){
         if(desired == max_partition_size) return -1;
