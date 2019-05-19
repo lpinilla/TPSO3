@@ -57,7 +57,7 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         free_mem((void*) rsi);
         break;
       case MEM_BASE:
-        return (uint64_t) return_memory_base();
+        return (uint64_t) memory_base();
       case NEW_PROCESS:
         return new_process(rsi, (char *)rdx, (int)rcx, 1);
       case KILL_PROCESS:
