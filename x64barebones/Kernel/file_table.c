@@ -1,5 +1,5 @@
 #include <file_table.h>
-/*
+
 typedef struct file_entryADT * file_entry_t;
 
 static file_entry_t file_table[MAX_ENTRIES];
@@ -17,7 +17,7 @@ void init_table(){
     }
 }
 
-int add_entry(char * path, void * entry, mode_t mode) {
+int get_entry(char * path, void * entry, mode_t mode) {
     int found = -1;
     for(int i=0; i<MAX_ENTRIES && found!=-1; i++){
         if(file_table[i]==NULL){
@@ -30,4 +30,3 @@ int add_entry(char * path, void * entry, mode_t mode) {
     }
     return found;
 }
-*/
