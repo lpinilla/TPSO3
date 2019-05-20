@@ -2,31 +2,48 @@
 
 typedef struct file_entryADT * file_entry_t;
 
+typedef struct inodeADT * inode_t;
+
 static file_entry_t file_table[MAX_ENTRIES];
+static inode_t inode_table[MAX_ENTRIES];
+
+typedef struct inodeADT {
+    int offset;
+    void * entry;
+    char * path[MAX_PATH];
+    file_t type;
+}inodeADT;
 
 typedef struct file_entryADT {
-    char * path[MAX_PATH];
-    void * entry;
-    int offset;
     mode_t mode;
+    inode_t file;
 } file_entryADT;
 
-void init_table(){
+void init_tables(){
     for(int i=0;i < MAX_ENTRIES; i++) {
         file_table[i]=NULL;
+        inode_table[i]=NULL;
     }
 }
 
-int get_entry(char * path, void * entry, mode_t mode) {
-    int found = -1;
-    for(int i=0; i<MAX_ENTRIES && found!=-1; i++){
-        if(file_table[i]==NULL){
-            file_table[i] = mem_alloc(sizeof(file_entryADT));
-            file_table[i]->offset=0;
-            file_table[i]->mode=mode;
-            str_cpy(file_table[i]->path, path);
-            found = i;
+int create_file(char * path, file_t type) {
+    int first_empty=-1;
+    for(int i=0; i<MAX_ENTRIES;i ++) {
+        if(first_empty==-1 && inode_table[i]==NULL){
+            first_empty=i;
+        }
+        if(str_cmp(path),inode_table[i]->path){
+            if(inode_table[i]->type==type)
+                return i;
+            return -1;
         }
     }
-    return found;
+    if(first_empty!= -1) {
+        inode_t aux = mem_alloc(sizeof(inodeADT));
+        aux->offset=0;
+        aux->entry= mem_alloc(INODE_BUFFER);
+        str_cpy(aux->path, path);
+        aux->type=type;
+    }
+    return first_empty;
 }
