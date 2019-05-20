@@ -41,6 +41,8 @@ void put_into_list_test();
 void look_for_space_in_list_test();
 void free_test();
 void free_test2();
+void free_test3();
+void free_test4();
 
 //helper functions
 void print_mem();
@@ -86,6 +88,8 @@ int main(void){
     add_test(look_for_space_in_list_test);
     add_test(free_test);
     add_test(free_test2);
+    add_test(free_test3);
+    add_test(free_test4);
     //correr la suite
     run_suite();
     //liberar los espacios
@@ -485,9 +489,47 @@ void free_test2(){
     r3 = mem_alloc(1<<11);
     if(r3 == NULL) exit(EXIT_FAILURE);
     free_mem(r3);
+    free_mem(r2);
+    ret = look_for_space_of_size(1, 8192) != -1;
+    free(mem);
+    assert_true(ret);
+}
+
+void free_test3(){
+    size_t total_size = ((1<<15)); //32KB
+    void * mem = malloc(total_size), * r1 = NULL, * r2 = NULL, * r3 = NULL;
+    int ret = 0;
+    initialize_list(mem, total_size);
+    r1 = mem_alloc(1<<11);
+    if(r1 == NULL) exit(EXIT_FAILURE);
+    r2 = mem_alloc(1<<11);
+    if(r2 == NULL) exit(EXIT_FAILURE);
+    r3 = mem_alloc(1<<11);
+    if(r3 == NULL) exit(EXIT_FAILURE);
+    free_mem(r3);
     ret = look_for_space_of_size(2, 12288) != -1;
     free(mem);
     assert_true(ret);
+}
+
+void free_test4(){
+    size_t total_size = ((1<<15)); //32KB
+    void * mem = malloc(total_size), * r1 = NULL, * r2 = NULL, * r3 = NULL;
+    int ret = 0;
+    initialize_list(mem, total_size);
+    r1 = mem_alloc(1<<12);
+    if(r1 == NULL) exit(EXIT_FAILURE);
+    r2 = mem_alloc(1<<11);
+    if(r2 == NULL) exit(EXIT_FAILURE);
+    r3 = mem_alloc(1<<11);
+    if(r3 == NULL) exit(EXIT_FAILURE);
+    free_mem(r3);
+    ret = free_lists[2][0] == 0;
+    ret += free_lists[2][1] == 0;
+    ret += free_lists[1][0] == 0;
+    ret += look_for_space_of_size(0,16384) != -1;
+    free(mem);
+    assert_true(ret == 4);
 }
 
 //helper function

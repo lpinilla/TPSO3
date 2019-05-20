@@ -100,10 +100,10 @@ void free_mem(void * ptr){
         put_space_in_list(0,max_partition_size);
         return;
     }
-    if(IS_POWER_OF_2(block_size)){
-        buddy_offset = block_offset + block_size + (block_size>>1); //buddy a la derecha
+    if(IS_POWER_OF_2(block_offset)){
+        buddy_offset = block_offset + block_size; //buddy a la derecha
     }else{
-        buddy_offset = block_offset + block_size - (block_size>>1); //buddy a la izquierda
+        buddy_offset = block_offset - block_size; //buddy a la izquierda
     }
     //busco en list_index espacio de offset block_size + block_size/2
     if(look_for_space_of_size(list_index, buddy_offset) == -1){
@@ -112,14 +112,14 @@ void free_mem(void * ptr){
         return;
     }
     //encontramos al buddy, a unirlo y buscar la memoria más grande
-    if(IS_POWER_OF_2(block_size)){
+    if(IS_POWER_OF_2(block_offset)){
         //agrandamos el tamaño y volvemos a buscar
-        *((int *)ptr - sizeof(int)) = block_size<<1; 
+        *((int *)ptr - 1) = block_size<<1; 
         free_mem(ptr);
     }else{
         //agrandamos el tamaño del de la izq y volvemos a buscar
-        *((int *) ((char *)ptr - (block_size>>1) * sizeof(char))) = block_size<<1;
-        free_mem(((char *)ptr - (block_size>>1) * sizeof(char)));
+        *((int *) ((char *)ptr - block_size * sizeof(char))) = block_size<<1;
+        free_mem(((char *)ptr - block_size * sizeof(char)));
     }
 }
 
