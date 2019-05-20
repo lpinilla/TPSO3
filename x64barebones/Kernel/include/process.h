@@ -9,6 +9,7 @@
 
 #define MAX_PROCESS_NAME 256
 #define MAX_PROCESSES 256
+#define MAX_FD 50
 
 typedef enum {P_READY, P_RUNNING, P_WAITING, P_TERMINATE} pstate_t;
 

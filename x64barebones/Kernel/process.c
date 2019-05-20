@@ -12,6 +12,7 @@ typedef struct processADT {
 	uint64_t stack_start;
     uint64_t stack_pointer;
 	int priority;
+	void * fds[MAX_FD];
 } processADT;
 
 typedef struct {
@@ -67,6 +68,9 @@ process_t create_process(uint64_t process_start, char * process_name, int priori
 	new_process->stack_start = (uint64_t)mem_alloc(STACK_SIZE);
     new_process->stack_pointer = init_stack(new_process, process_start, new_process->stack_start);
 	new_process->priority = priority;
+	for(int i=0; i<MAX_FD; i++){
+		new_process->fds[i]=NULL;
+	}
 	if(global_pid != 0){
 		new_process->ppid = get_current_process()->pid;
 	}
