@@ -34,7 +34,7 @@ void * mem_alloc(size_t size){
     index = powers_in_between(aux, max_partition_size);
     free_space_offset = look_for_space_in_list(index);
     if(free_space_offset != -1){ //encontramos un hueco
-        *((char *) memory_base() + free_space_offset) = aux;
+        *((int *) ((char *) memory_base() + free_space_offset)) = aux;
         return (void *) ((char *) memory_base() + free_space_offset + sizeof(int));
     }//no encontramos hueco
     if(split_upper_level(aux<<1, 0) == -1) return NULL; //no hay memoria disponible
@@ -60,8 +60,8 @@ int split_upper_level(size_t desired, int levels){
 void recursive_divide(int index_in_list, int levels){
     if(levels == 0) return;
     int aux = free_lists[index_in_list][0];
-    free_lists[index_in_list+1][0] = aux;
-    free_lists[index_in_list+1][1] = aux + (PAGE_SIZE<<(n_of_lists-index_in_list-2));
+    put_space_in_list(index_in_list+1,aux);
+    put_space_in_list(index_in_list+1, aux + (PAGE_SIZE<<(n_of_lists-index_in_list-2)));
     free_lists[index_in_list][0] = 0;
     recursive_divide(index_in_list+1, levels-1);
 }
@@ -78,9 +78,58 @@ int look_for_space_in_list(int index){
     return -1;
 }
 
+int look_for_space_of_size(int index, size_t size){ //ver de mergear con la función de arriba
+    int ret = 0;
+    for(int i = 0; i < (1<<index); i++){
+        if(free_lists[index][i] == size){
+            ret = free_lists[index][i];
+            free_lists[index][i] = 0;
+            return ret;
+        }
+    }
+    return -1;
+}
+
 
 void free_mem(void * ptr){
-   
+    if(ptr == NULL) return;
+    size_t block_size = *((int *) ptr - 1), buddy_offset = 0;
+    int block_offset = ((char *)((int *) ptr - 1)) - (char *) memory_base();
+    int list_index = powers_in_between(block_size, max_partition_size);
+    if(block_size == max_partition_size){
+        put_space_in_list(0,max_partition_size);
+        return;
+    }
+    if(IS_POWER_OF_2(block_size)){
+        buddy_offset = block_offset + block_size + (block_size>>1); //buddy a la derecha
+    }else{
+        buddy_offset = block_offset + block_size - (block_size>>1); //buddy a la izquierda
+    }
+    //busco en list_index espacio de offset block_size + block_size/2
+    if(look_for_space_of_size(list_index, buddy_offset) == -1){
+        //no encontramos el buddy, introducimos este valor en la lista
+        put_space_in_list(list_index, block_offset);
+        return;
+    }
+    //encontramos al buddy, a unirlo y buscar la memoria más grande
+    if(IS_POWER_OF_2(block_size)){
+        //agrandamos el tamaño y volvemos a buscar
+        *((int *)ptr - sizeof(int)) = block_size<<1; 
+        free_mem(ptr);
+    }else{
+        //agrandamos el tamaño del de la izq y volvemos a buscar
+        *((int *) ((char *)ptr - (block_size>>1) * sizeof(char))) = block_size<<1;
+        free_mem(((char *)ptr - (block_size>>1) * sizeof(char)));
+    }
+}
+
+void put_space_in_list(int index, size_t size){
+    for(int i = 0; i < (1<<index); i++){
+        if(free_lists[index][i] == 0){
+            free_lists[index][i] = size;
+            return;
+        }
+    }
 }
 
 void print_list(){

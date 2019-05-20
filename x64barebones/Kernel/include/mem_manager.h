@@ -59,6 +59,10 @@ int split_upper_level(size_t desired,int levels);
 //Función que se encarga dividir recursivamente la memoria "para abajo"
 void recursive_divide(int index_in_list, int levels);
 
+void put_space_in_list(int index, size_t size);
+
+int look_for_space_of_size(int index, size_t size);
+
 int * free_lists[20];
 size_t max_partition_size, total_mem_size;
 int n_of_lists;
