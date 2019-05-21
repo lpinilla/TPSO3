@@ -8,6 +8,8 @@
 #define PAGE_SIZE 4096 //4KB
 #define IS_POWER_OF_2(x) (!((x)&((x)-1)))
 
+//sistema basado en: https://silcnitc.github.io/run_data_structures/heap.html#nav-buddy-allocation
+
 /*función para inicializar la memoria dado un puntero inicial y el tamaño
 **total de la memoria*/
 void initialize_list(void * start_ptr, size_t total_size);
@@ -51,7 +53,18 @@ size_t fix_size(size_t size);
 /*Función que busca en la lista de ídice i un espacio libre*/
 int look_for_space_in_list(int index);
 
+//Función para dividir un espacio de memoria en 2
+int split_upper_level(size_t desired,int levels);
+
+//Función que se encarga dividir recursivamente la memoria "para abajo"
+void recursive_divide(int index_in_list, int levels);
+
+void put_space_in_list(int index, size_t size);
+
+int look_for_space_of_size(int index, size_t size);
+
 int * free_lists[20];
-size_t max_partition_size;
+size_t max_partition_size, total_mem_size;
+int n_of_lists;
 
 #endif
