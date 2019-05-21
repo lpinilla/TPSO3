@@ -118,8 +118,8 @@ void free_mem(void * ptr){
         free_mem(ptr);
     }else{
         //agrandamos el tamaño del de la izq y volvemos a buscar
-        *((int *) ((char *)ptr - block_size * sizeof(char))) = block_size<<1;
-        free_mem(((char *)ptr - block_size * sizeof(char)));
+        *( (int *) ((char *) ptr - block_size * sizeof(char) )-1) = block_size<<1;
+        free_mem((void *) ((char *)  ptr - block_size * sizeof(char)));
     }
 }
 

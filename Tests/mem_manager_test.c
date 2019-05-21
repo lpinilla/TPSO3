@@ -44,6 +44,8 @@ void free_test2();
 void free_test3();
 void free_test4();
 void repeat_malloc_test();
+void repeat_malloc_test2();
+void repeat_malloc_test3();
 
 //helper functions
 void print_mem();
@@ -92,6 +94,8 @@ int main(void){
     add_test(free_test3);
     add_test(free_test4);
     add_test(repeat_malloc_test);
+    add_test(repeat_malloc_test2);
+    add_test(repeat_malloc_test3);
     //correr la suite
     run_suite();
     //liberar los espacios
@@ -549,6 +553,43 @@ void repeat_malloc_test(){
     ret += free_lists[2][0] == 4096;
     free(mem);
     assert_true(ret == 2);
+}
+
+void repeat_malloc_test2(){
+    size_t total_size = ((1<<15)); //32KB
+    void * mem = malloc(total_size);
+    void * p[3] = {NULL, NULL, NULL};
+    int ret = 0;
+    initialize_list(mem, total_size);
+    for(int t = 0; t < 4; t++){
+        for(int i = 0; i < 3; i++){
+            p[i] = mem_alloc(8);
+            if(p[i] == NULL) exit(EXIT_FAILURE);        
+        }
+        for(int i = 0; i < 3; i++) free_mem(p[i]);
+        ret += free_lists[1][0] == 8192;
+        ret += free_lists[2][0] == 4096;
+    }
+    free(mem);
+    assert_true(ret == 2*4);
+}
+
+void repeat_malloc_test3(){
+    size_t total_size = ((1<<15)); //32KB
+    void * mem = malloc(total_size);
+    void * p[3] = {NULL, NULL, NULL};
+    int ret = 0;
+    initialize_list(mem, total_size);
+    p[0] = mem_alloc(1<<12);
+    if(p[0] == NULL) exit(EXIT_FAILURE);
+    p[1] = mem_alloc(1);
+    if(p[1] == NULL) exit(EXIT_FAILURE);
+    p[2] = mem_alloc(1);
+    if(p[2] == NULL) exit(EXIT_FAILURE);
+    free_mem(p[2]);
+    ret = look_for_space_of_size(0, max_partition_size) != -1;
+    free(mem);
+    assert_true(ret == 1);
 }
 
 //helper function
