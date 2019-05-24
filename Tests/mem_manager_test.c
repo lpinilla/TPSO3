@@ -46,6 +46,8 @@ void free_test4();
 void repeat_malloc_test();
 void repeat_malloc_test2();
 void repeat_malloc_test3();
+void use_mem_test();
+void use_mem_test2();
 
 //helper functions
 void print_mem();
@@ -96,6 +98,8 @@ int main(void){
     add_test(repeat_malloc_test);
     add_test(repeat_malloc_test2);
     add_test(repeat_malloc_test3);
+    add_test(use_mem_test);
+    add_test(use_mem_test2);
     //correr la suite
     run_suite();
     //liberar los espacios
@@ -590,6 +594,38 @@ void repeat_malloc_test3(){
     ret = look_for_space_of_size(0, max_partition_size) != -1;
     free(mem);
     assert_true(ret == 1);
+}
+
+void use_mem_test(){
+    size_t total_size = ((1<<15)); //32KB
+    void * mem = malloc(total_size), * s = NULL;
+    char * string = "Hello World!";
+    int ret = 0;
+    initialize_list(mem, total_size);
+    s = mem_alloc(strlen(string) * sizeof(char));
+    strcpy(s, string);
+    ret = str_cmp(string, s);
+    free_mem(s);
+    free(mem);
+    assert_false(ret);
+}
+
+void use_mem_test2(){
+    size_t total_size = ((1<<15)); //32KB
+    void * mem = malloc(total_size), * s = NULL, *s2 = NULL;
+    char * string = "Hello", * string2 = "World!";
+    int ret = 0;
+    initialize_list(mem, total_size);
+    s = mem_alloc(strlen(string) * sizeof(char));
+    strcpy(s, string);
+    ret = str_cmp(string, s);
+    s2 = mem_alloc(strlen(string2) * sizeof(char));
+    strcpy(s2, string2);
+    ret += str_cmp(string2, s2);
+    free_mem(s);
+    free_mem(s2);
+    free(mem);
+    assert_false(ret);
 }
 
 //helper function
