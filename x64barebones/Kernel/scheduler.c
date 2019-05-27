@@ -1,6 +1,9 @@
 #include <scheduler.h>
 
 static void set_next_process();
+static queue_t select_queue();
+static int select_time_queue();
+
 
 /*
 //LISTA DE NODOS CIRCULAR PARA LOS PROCESOS
@@ -102,7 +105,7 @@ void kill_current_process(){
 
 
 
-int select_time_queue() {
+static int select_time_queue() {
     int rest = ticks_elapsed() % 10;
     if(rest < 5){
         return HIGH;
@@ -113,7 +116,7 @@ int select_time_queue() {
     }
 }
 
-int select_queue() {
+static queue_t select_queue() {
     int priority_next = select_time_queue();
     if(get_queue_size(scheduler->procceses[priority_next])>0)
         return scheduler->procceses[priority_next];
