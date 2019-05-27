@@ -47,3 +47,12 @@ int create_file(char * path, file_t type) {
     }
     return first_empty;
 }
+
+int open_file(char * path){
+    for(int i=0; i<MAX_ENTRIES; i++){
+        if(str_cmp(path, inode_table[i]->path));
+    }
+}
+int close(int pos){
+    file_table[pos]=NULL;
+}
