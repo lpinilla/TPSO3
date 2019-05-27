@@ -1,5 +1,8 @@
 //incluirlo manualmente para los tests
 #include "./include/mem_manager.h"
+int * free_lists[20];
+ size_t max_partition_size, total_mem_size;
+ int n_of_lists;
 
 
 static void * start_dir;
