@@ -1,11 +1,11 @@
-#include <dining_philosophers.h>
+#include <philosophers.h>
 
 
 int state[MAXPHILO]; 
 int forkState[MAXPHILO];
 int semaphores[MAXPHILO];
 int ph_count;
-int ph_id;
+int static ph_id;
 int ph_mutex;
 char c;
 
@@ -31,6 +31,7 @@ void deletePhilosopher(){
 			    sys_sem_close(semaphores[ph_count-1]);
 			    ph_count--;
 			    ph_id--;
+                //terminar proceso?
 		    }
         }
 	}
@@ -89,8 +90,8 @@ void put_fork(int ph_id)
   
     print_ph_state();
   
-    test((ph_id + ph_count - 1) % ph_count); 
-    test((ph_id + 1) % ph_count); 
+    test((ph_id + ph_count - 1) % ph_count); //izquierdo
+    test((ph_id + 1) % ph_count); //derecho
   
     sys_unlock(&ph_mutex); 
 } 
@@ -99,15 +100,10 @@ void put_fork(int ph_id)
 
 
 void philosopher(void* id) {
-	
         int* i = id; 
-  
         sys_sleep(1); 
-  
         take_fork(*i); 
-  
         sys_sleep(0); 
-  
         put_fork(*i); 
     
 }
