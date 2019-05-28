@@ -1,8 +1,10 @@
 //incluirlo manualmente para los tests
 #include "./include/mem_manager.h"
 
-
 static void * start_dir;
+int * free_lists[20]; //hasta 20 listas
+size_t max_partition_size, total_mem_size;
+int n_of_lists;
 
 
 void initialize_list(void * start_ptr, size_t total_size){
@@ -94,7 +96,7 @@ int look_for_space_of_size(int index, size_t size){ //ver de mergear con la func
 void free_mem(void * ptr){
     if(ptr == NULL) return;
     size_t block_size = *((int *) ptr - 1), buddy_offset = 0;
-    int block_offset = ((char *)((int *) ptr - 1)) - (char *) memory_base();
+    size_t block_offset = ((char *)((int *) ptr - 1)) - (char *) memory_base();
     int list_index = powers_in_between(block_size, max_partition_size);
     if(block_size == max_partition_size){
         put_space_in_list(0,max_partition_size);
@@ -118,8 +120,8 @@ void free_mem(void * ptr){
         free_mem(ptr);
     }else{
         //agrandamos el tamaño del de la izq y volvemos a buscar
-        *( (int *) ((char *) ptr - block_size * sizeof(char) )-1) = block_size<<1;
-        free_mem((void *) ((char *)  ptr - block_size * sizeof(char)));
+        *((int *) (((char *)memory_base() + buddy_offset))) = block_size<<1;
+        free_mem((void *) ((char *)memory_base() + buddy_offset + sizeof(int)));
     }
 }
 

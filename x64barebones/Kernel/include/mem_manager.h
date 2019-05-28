@@ -63,8 +63,6 @@ void put_space_in_list(int index, size_t size);
 
 int look_for_space_of_size(int index, size_t size);
 
-int * free_lists[20];
-size_t max_partition_size, total_mem_size;
-int n_of_lists;
+
 
 #endif
