@@ -1,10 +1,9 @@
 //incluirlo manualmente para los tests
 #include "./include/mem_manager.h"
 static void * start_dir;
-int * free_lists[20]; //hasta 20 listas
+size_t * free_lists[N_OF_LISTS]; //hasta 20 listas
 size_t max_partition_size, total_mem_size;
 int n_of_lists;
-
 
 void initialize_list(void * start_ptr, size_t total_size){
     start_dir = start_ptr;
@@ -20,12 +19,12 @@ void * memory_base(){
 }
 
 void * mem_alloc(size_t size){
-    int index = 0, free_space_offset = 0;
-    size_t aux = 0;
+    int index = 0;
+    size_t aux = 0,free_space_offset = 0;
     if(size >= PAGE_SIZE){
         //arreglar el tamaño (+ 1 int) si es igual a una página o no es potencia de 2
-        if(size == PAGE_SIZE || !IS_POWER_OF_2(size+sizeof(int))){
-            aux = fix_size(size+sizeof(int));
+        if(size == PAGE_SIZE || !IS_POWER_OF_2(size+sizeof(size_t))){
+            aux = fix_size(size+sizeof(size_t));
         }
     }else{
         aux = PAGE_SIZE;
@@ -35,8 +34,8 @@ void * mem_alloc(size_t size){
     index = powers_in_between(aux, max_partition_size);
     free_space_offset = look_for_space_in_list(index);
     if(free_space_offset != -1){ //encontramos un hueco
-        *((int *) ((char *) memory_base() + free_space_offset)) = aux;
-        return (void *) ((char *) memory_base() + free_space_offset + sizeof(int));
+        *((size_t *) ((char *) memory_base() + free_space_offset)) = aux;
+        return (void *) ((char *) memory_base() + free_space_offset + sizeof(size_t));
     }//no encontramos hueco
     if(split_upper_level(aux<<1, 0) == -1) return NULL; //no hay memoria disponible
     return mem_alloc(size); //se dividió, intentamos de nuevo el pedido
@@ -67,8 +66,8 @@ void recursive_divide(int index_in_list, int levels){
     recursive_divide(index_in_list+1, levels-1);
 }
 
-int look_for_space_in_list(int index){
-    int ret = 0;
+size_t look_for_space_in_list(int index){
+    size_t ret = 0;
     for(int i = 0; i < (1<<index); i++){
         if(free_lists[index][i] != 0){
             ret = free_lists[index][i];
@@ -79,8 +78,8 @@ int look_for_space_in_list(int index){
     return -1;
 }
 
-int look_for_space_of_size(int index, size_t size){ //ver de mergear con la función de arriba
-    int ret = 0;
+size_t look_for_space_of_size(int index, size_t size){ //ver de mergear con la función de arriba
+    size_t ret = 0;
     for(int i = 0; i < (1<<index); i++){
         if(free_lists[index][i] == size){
             ret = free_lists[index][i];
@@ -94,8 +93,8 @@ int look_for_space_of_size(int index, size_t size){ //ver de mergear con la func
 
 void free_mem(void * ptr){
     if(ptr == NULL) return;
-    size_t block_size = *((int *) ptr - 1), buddy_offset = 0;
-    size_t block_offset = ((char *)((int *) ptr - 1)) - (char *) memory_base();
+    size_t block_size = *((size_t *) ptr - 1), buddy_offset = 0;
+    size_t block_offset = ((char *)((size_t *) ptr - 1)) - (char *) memory_base();
     int list_index = powers_in_between(block_size, max_partition_size);
     if(block_size == max_partition_size){
         put_space_in_list(0,max_partition_size);
@@ -115,12 +114,12 @@ void free_mem(void * ptr){
     //encontramos al buddy, a unirlo y buscar la memoria más grande
     if(IS_POWER_OF_2(block_offset)){
         //agrandamos el tamaño y volvemos a buscar
-        *((int *)ptr - 1) = block_size<<1; 
+        *((size_t *)ptr - 1) = block_size<<1; 
         free_mem(ptr);
     }else{
         //agrandamos el tamaño del de la izq y volvemos a buscar
-        *((int *) (((char *)memory_base() + buddy_offset))) = block_size<<1;
-        free_mem((void *) ((char *)memory_base() + buddy_offset + sizeof(int)));
+        *((size_t *) (((char *)memory_base() + buddy_offset))) = block_size<<1;
+        free_mem((void *) ((char *)memory_base() + buddy_offset + sizeof(size_t)));
     }
 }
 
@@ -142,12 +141,23 @@ void print_list(){
 
 
 void create_free_lists(void * mem, size_t total_size){
+    int heap_size = 0;
     n_of_lists = powers_in_between(PAGE_SIZE, total_size);
     //"alocar" la memoria inicializada
-    memset(free_lists, 0, 20 * sizeof(int));
+    memset(free_lists, 0, N_OF_LISTS * sizeof(size_t));
     load_free_lists(mem, 0, n_of_lists);
-    populate_free_list(PAGE_SIZE << (n_of_lists-1), 0, n_of_lists);
+    heap_size = pages_used_by_heap();
+    if(heap_size == -1){
+        heap_size = 0;
+    }
+    populate_free_list(PAGE_SIZE << (n_of_lists-1), 0, n_of_lists - heap_size);
     max_partition_size = *free_lists[0];
+}
+
+int pages_used_by_heap(){
+    size_t size = ((1<<(n_of_lists+1)) - 1) * sizeof(size_t);
+    fix_size(size);
+    return powers_in_between(PAGE_SIZE,size);
 }
 
 int powers_in_between(size_t lower, size_t upper){
@@ -158,7 +168,7 @@ int powers_in_between(size_t lower, size_t upper){
 
 void load_free_lists(void * mem, int index, int n_of_lists){
     if(!n_of_lists) return;
-    free_lists[index] = (int *) mem + (1<<index) - 1;
+    free_lists[index] = (size_t *) mem + (1<<index) - 1;
     load_free_lists(mem, index+1, n_of_lists-1);
 }
 

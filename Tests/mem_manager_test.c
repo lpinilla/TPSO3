@@ -2,6 +2,9 @@
 #include "../x64barebones/Kernel/include/mem_manager.h"
 #include "../x64barebones/Kernel/include/graphics.h"
 
+size_t * free_lists[N_OF_LISTS]; //hasta 20 listas
+size_t max_partition_size, total_mem_size;
+int n_of_lists;
 
 void powers_in_between_test();
 void powers_in_between_test2();
@@ -48,6 +51,9 @@ void repeat_malloc_test2();
 void repeat_malloc_test3();
 void use_mem_test();
 void use_mem_test2();
+void use_mem_test3();
+void mem_init_test();
+void mem_init_test2();
 
 //helper functions
 void print_mem();
@@ -100,6 +106,10 @@ int main(void){
     add_test(repeat_malloc_test3);
     add_test(use_mem_test);
     add_test(use_mem_test2);
+    add_test(use_mem_test3);
+    add_test(mem_init_test);
+    add_test(mem_init_test2);
+
     //correr la suite
     run_suite();
     //liberar los espacios
@@ -107,26 +117,26 @@ int main(void){
 }
 
 void powers_in_between_test(){
-    assert_true(powers_in_between(PAGE_SIZE, 1<<12) == 0);
+    assert_true(powers_in_between(PAGE_SIZE, 1<<10) == 0);
 }
 
 void powers_in_between_test2(){
-    assert_true(powers_in_between(PAGE_SIZE, 1<<13) == 1);
+    assert_true(powers_in_between(PAGE_SIZE, 1<<11) == 1);
 }
 
 void powers_in_between_test3(){
-    assert_true(powers_in_between(PAGE_SIZE, 1<<16) == 4);
+    assert_true(powers_in_between(PAGE_SIZE, 1<<14) == 4);
 }
 
 void powers_in_between_test4(){
-    assert_true(powers_in_between(PAGE_SIZE, 1<<11) == -1);
+    assert_true(powers_in_between(PAGE_SIZE, 1<<9) == -1);
 }
 
 void free_lists_creation_test(){
     size_t total_size = (1<<15); //32KB
     int n_of_lists = powers_in_between(PAGE_SIZE, total_size);
     int n_of_elems = 1<<n_of_lists;
-    int mem[n_of_elems], asst = 0;
+    size_t mem[n_of_elems], asst = 0;
     for(int i = 0; i < n_of_elems; i++) mem[i] = i+1;
     load_free_lists(mem, 0, n_of_lists);
     asst = *free_lists[0] == mem[0];
@@ -139,7 +149,7 @@ void free_lists_creation_test2(){
     size_t total_size = (1<<16); //64KB
     int n_of_lists = powers_in_between(PAGE_SIZE, total_size);
     int n_of_elems = 1<<n_of_lists;
-    int mem[n_of_elems], asst = 0;
+    size_t mem[n_of_elems], asst = 0;
     for(int i = 0; i < n_of_elems; i++) mem[i] = i+1;
     load_free_lists(mem, 0, n_of_lists);
     asst = *free_lists[0] == mem[0];
@@ -227,16 +237,16 @@ void alloc_free_list_available_test(){
     void * mem = malloc(total_size), * requested = NULL;
     int ret = 0;
     initialize_list(mem, total_size);
-    requested = mem_alloc(PAGE_SIZE<<1);
+    requested = mem_alloc(PAGE_SIZE>>1);
     if(requested == NULL){
         exit(EXIT_FAILURE);
     }
-    *((int *) requested) = 30;
+    *((size_t *) requested) = 30;
     /*printf("base        %p \n", memory_base());
     printf("returned    %p \n", requested);
-    printf("calculated  %p \n", (int *) memory_base() + (PAGE_SIZE+1) * sizeof(char));
-    printf("%d \n", *((int *) mem + (PAGE_SIZE+1) * sizeof(char)));*/
-    ret =  *((int *) mem + (PAGE_SIZE+1) * sizeof(char)) == 30;
+    printf("calculated  %p \n", (char *) memory_base() + (PAGE_SIZE) * sizeof(char) + sizeof(size_t));
+    printf("%ld \n",  *( (size_t *) ((char *) mem + (PAGE_SIZE) * sizeof(char) + sizeof(size_t))) );*/
+    ret =  *( (size_t *) ((char *) mem + (PAGE_SIZE) * sizeof(char) + sizeof(size_t))) == 30;
     free(mem);
     assert_true(ret);
 }
@@ -345,7 +355,7 @@ void init_list_test(){
     int ret = 0;
     initialize_list(mem, total_size);
     ret = total_mem_size == total_size;
-    ret += n_of_lists == 3;
+    ret += n_of_lists == 5;
     free(mem);
     assert_true(ret == 2);
 }
@@ -356,7 +366,7 @@ void init_list_test2(){
     int ret = 0;
     initialize_list(mem, total_size);
     ret = total_mem_size == (1<<15);
-    ret += n_of_lists == 3;
+    ret += n_of_lists == 5;
     free(mem);
     assert_true(ret == 2);
 }
@@ -444,9 +454,9 @@ void alloc_first_byte_size_test(){
     void * mem = malloc(total_size), * r1 = NULL;
     int ret = 0;
     initialize_list(mem, total_size);
-    r1 = mem_alloc(1<<11);
+    r1 = mem_alloc(1<<9);
     if(r1 == NULL) exit(EXIT_FAILURE);
-    ret = *((int *)r1 - 1) == PAGE_SIZE;
+    ret = *((size_t *)r1 - 1) == PAGE_SIZE;
     free(mem);
     assert_true(ret);
 }
@@ -469,7 +479,7 @@ void look_for_space_in_list_test(){
     void * mem = malloc(total_size);
     int ret = 0;
     initialize_list(mem, total_size);
-    ret =  look_for_space_of_size(2,PAGE_SIZE) == PAGE_SIZE;
+    ret =  look_for_space_of_size(4,PAGE_SIZE) == PAGE_SIZE;
     free(mem);
     assert_true(ret);
 }
@@ -479,10 +489,10 @@ void free_test(){
     void * mem = malloc(total_size), * r1 = NULL;
     int ret = 0;
     initialize_list(mem, total_size);
-    r1 = mem_alloc(1<<11);
+    r1 = mem_alloc(1<<9);
     if(r1 == NULL) exit(EXIT_FAILURE);
     free_mem(r1);
-    ret = look_for_space_of_size(2, PAGE_SIZE) != -1;
+    ret = look_for_space_of_size(4, PAGE_SIZE) != -1;
     free(mem);
     assert_true(ret);
 }
@@ -628,11 +638,67 @@ void use_mem_test2(){
     assert_false(ret);
 }
 
+void use_mem_test3(){
+    size_t total_size = (1<<22); //4mb
+    void * mem = malloc(total_size);
+    if(mem == NULL){
+        perror("Too much memory");
+        exit(EXIT_FAILURE);
+    }
+    void * ptrs[3] = {NULL, NULL, NULL};
+    int ret = 1;
+    initialize_list(mem, total_size);
+    //print_mem();
+    for(int i = 0; i < 3; i++){
+        ptrs[0] = mem_alloc(100);
+        ptrs[1] = mem_alloc(200);
+        ptrs[2] = mem_alloc(300);
+        if(ptrs[0] == NULL || ptrs[1] == NULL || ptrs[2] == NULL){
+            exit(EXIT_FAILURE);
+        }
+        /*printf("p1: %p \n", ptrs[0]);
+        printf("p2: %p \n", ptrs[1]);
+        printf("p3: %p \n", ptrs[2]);*/
+        free_mem(ptrs[2]);
+        free_mem(ptrs[1]);
+        free_mem(ptrs[0]);
+        
+    }
+    
+    assert_true(ret);
+}
+
+void mem_init_test(){
+    size_t total_size = (1<<15);
+    void * mem = malloc(total_size);
+    if(mem == NULL){
+        perror("Memory too big");
+        exit(EXIT_FAILURE); 
+    }
+    initialize_list(mem, total_size);
+    //print_mem();
+    free(mem);
+    assert_true(1);
+}
+
+void mem_init_test2(){
+    size_t total_size = (1<<20);
+    void * mem = malloc(total_size);
+    if(mem == NULL){
+        perror("Memory too big");
+        exit(EXIT_FAILURE); 
+    }
+    initialize_list(mem, total_size);
+    //print_mem();
+    free(mem);
+    assert_true(1);
+}
+
 //helper function
 void print_mem(){
     for(int i = 0; i < powers_in_between(PAGE_SIZE, total_mem_size); i++){
         for(int j = 0; j < (1<<i);j++){
-            printf("%d ", free_lists[i][j]);
+            printf("%ld ", free_lists[i][j]);
         }
         printf("\n");
     }

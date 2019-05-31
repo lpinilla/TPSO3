@@ -5,8 +5,10 @@
 #include "../include/lib.h"
 #include "graphics.h"
 
-#define PAGE_SIZE 4096 //4KB
+//#define PAGE_SIZE 4096 //4KB
+#define PAGE_SIZE 1024
 #define IS_POWER_OF_2(x) (!((x)&((x)-1)))
+#define N_OF_LISTS 20 //20 listas alcanzaría como para 1Gb (creo)
 
 //sistema basado en: https://silcnitc.github.io/run_data_structures/heap.html#nav-buddy-allocation
 
@@ -51,7 +53,7 @@ void populate_free_list(int initial_value, int index, int steps);
 size_t fix_size(size_t size);
 
 /*Función que busca en la lista de ídice i un espacio libre*/
-int look_for_space_in_list(int index);
+size_t look_for_space_in_list(int index);
 
 //Función para dividir un espacio de memoria en 2
 int split_upper_level(size_t desired,int levels);
@@ -61,7 +63,9 @@ void recursive_divide(int index_in_list, int levels);
 
 void put_space_in_list(int index, size_t size);
 
-int look_for_space_of_size(int index, size_t size);
+size_t look_for_space_of_size(int index, size_t size);
+
+int pages_used_by_heap();
 
 
 
