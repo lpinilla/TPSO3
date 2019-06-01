@@ -41,5 +41,6 @@ void sys_print_mem_list();
 void sys_ipc_read(int id, char * msg_ret);
 void sys_ipc_write(char * msg, int id);
 int sys_create_priority_process(void * function, char * name, pground_t process_ground, ppriority_t priority);
+int sys_create_args_process(void * function, char * name, pground_t process_ground, int argc, void ** argv);
 
 #endif

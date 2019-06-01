@@ -16,6 +16,7 @@ typedef struct processADT * process_t;
 
 void init_processes();
 process_t create_process(uint64_t process_start, char * name, int priority);
+process_t create_process_args(uint64_t process_start, char * process_name, int argc, void ** argv, int priority);
 void delete_process(process_t process);
 void set_state(process_t process, pstate_t state);
 void set_state_id(size_t pid, pstate_t state);
