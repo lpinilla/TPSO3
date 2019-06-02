@@ -51,6 +51,8 @@
 #define IPC_WRITE 37
 #define NEW_PROCESS_PRIORITY 38
 #define NICE 39
+#define OPEN_FD 40
+#define CLOSE_FD 41
 
 //si pongo #include <mem_manager.h> se rompe
 void * mem_alloc(size_t size);

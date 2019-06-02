@@ -240,7 +240,7 @@ static void init_fds(process_t process){
 	}
 }
 
-int open(char * path, fd_t type){
+int open_fd(char * path, fd_t type){
 	inode_t aux = get_file(path);
 	if(aux==NULL)
 		return -1;
@@ -256,7 +256,7 @@ int open(char * path, fd_t type){
 	return -1;
 }
 
-int close(int fd_pos){
+int close_fd(int fd_pos){
 	process_t current = get_current_process();
 	if(current->fds[fd_pos]!=NULL){
 		free_mem(current->fds[fd_pos]);
