@@ -1,8 +1,6 @@
 #include <philosophers.h>
 #include <philo_ui.h>
 
-
-
 static int ph_id;
 static int ph_mutex;
 char c;
@@ -10,39 +8,36 @@ int state[MAXPHILO];
 int forkState[MAXPHILO];
 int ph_count;
 int semaphores[MAXPHILO];
+int philo_process[MAXPHILO];
 
 
-void createPhilosopher(){
+void create_philosopher(){
 	        ph_count++;
 		    semaphores[ph_count] = sys_sem_open((void*) (long) ph_id);
 		    state[ph_id] = THINKING;
             argumentsPointer arg=sys_my_malloc(sizeof(arguments));
             arg->ph_id=ph_id;
             ph_id++;
-		    sys_create_args_process(philosopher,"mmimi",BACKGROUND,1,(void**)arg);
+		    philo_process[ph_id]=sys_create_args_process(philosopher,"mmimi",BACKGROUND,1,(void**)arg);
+            sys_my_free(arg);
             //sys_create_process(philosopher,"mimi",BACKGROUND);
     
 	//exit?
 }
 
 void philosopher(int argc,argumentsPointer arg) {
+    while(1){
         sys_sleep(1); 
         take_fork(arg->ph_id); 
         sys_sleep(1); 
         put_fork(arg->ph_id); 
-
-    
+    }
 }
 
-void deletePhilosopher(){
-       
-		    if(ph_count > 1){
-			    sys_sem_close(semaphores[ph_count-1]);
-			    ph_count--;
-			    ph_id--;
-                //terminar proceso?
-		    }
-	//exit?
+void delete_philosopher(){
+        sys_sem_close(semaphores[ph_count-1]);
+	    ph_count--;
+        sys_kill_process(philo_process[--ph_id]);
 }
 
 void test(int id) { 
@@ -129,6 +124,8 @@ void print_ph_state() {
             print_f("Right Owner %d\n\n",forkState[i]);
         }
 	}
+    print_f("----------------------------\n");
+
 
 }
 
@@ -141,33 +138,58 @@ int right(int id){
 
 void philosophers() {
     //Setup
-	ph_count = 2; //para testear ui
+	ph_count = 0;
 	ph_id = 0; 
     ph_mutex=0;
     int running=1;
+    char * philo_name="Philosopher N";
     
     for(int i=0;i<MAXPHILO;i++){
         forkState[i]=MAXPHILO;
     }
-        sys_clear_console();
+    sys_clear_console();
 
     //print_ui();
 	print_f("Press 'c' to create a new philosopher.\n");
     print_f("Press 'd' to delete one philosopher.\n");
+    print_f("Press 'q' to quit dining philosophers\n");
 
     while(running){
         
-        c=get_key();
+        c=get_char();
+        int pid = 0;
         switch (c){
             case 'c':
-		        sys_create_process(createPhilosopher,"mmimi",BACKGROUND);            
+                if(ph_count<MAXPHILO){
+                    philo_name[12]=(char)(ph_id + '0');
+                    //sys_create_process(create_philosopher,philo_name,BACKGROUND);
+                    ph_count++;
+                    semaphores[ph_count] = sys_sem_open((void*) (long) ph_id);
+                    state[ph_id] = THINKING;
+                    argumentsPointer arg=sys_my_malloc(sizeof(arguments));
+                    arg->ph_id=ph_id;
+                    ph_id++;
+                    philo_process[ph_id]=sys_create_args_process(philosopher,"mmimi",BACKGROUND,1,(void**)arg);
+                    sys_my_free(arg);
+                }
                 break;
 
             case 'd':
-                sys_create_process(deletePhilosopher,(void*)(long)ph_id,BACKGROUND);
-            break;
-            
+                if(ph_count>0){
+                    philo_name[12]=(char)(ph_id + '0');
+                    sys_create_process(delete_philosopher,philo_name,BACKGROUND);
+
+                }
+                break;
+            case 'q':
+                running=0;
+                while (ph_count>0){
+                    delete_philosopher();
+                }
+                sys_sem_close(semaphores[ph_count-1]);               
+                break;
         }
+        
     }
 
 	

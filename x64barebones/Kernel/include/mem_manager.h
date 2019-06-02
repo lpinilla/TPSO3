@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include "../include/lib.h"
 #include "graphics.h"
+#include "./syscall_dispacher.h"
 
 //#define PAGE_SIZE 4096 //4KB
 #define PAGE_SIZE 1024

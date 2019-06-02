@@ -1,9 +1,9 @@
 #include "include/shell.h"
 
 
-static func execute_command[]={invalid_command,play_pong,show_time,shutdown,make_beep,make_div,ayuda,try_scan_f,try_print_f,try_invalid_function, try_processes, ps, try_mutex, try_semaphore, try_alloc, try_ipc, run_prodcons, try_process_args};
+static func execute_command[]={invalid_command,play_pong,show_time,shutdown,make_beep,make_div,ayuda,try_scan_f,try_print_f,try_invalid_function, try_processes, ps, try_mutex, try_semaphore, try_alloc, try_ipc, run_prodcons, try_process_args,run_philo};
 
-const char * commands[] = {"pong", "time","shutdown","beep","div","help","scan","print","invalid", "processes_test", "ps", "mutex_test", "semaphore_test", "alloc_test", "ipc_test", "prodcons", "process_args_test"};
+const char * commands[] = {"pong", "time","shutdown","beep","div","help","scan","print","invalid", "processes_test", "ps", "mutex_test", "semaphore_test", "alloc_test", "ipc_test", "prodcons", "process_args_test","philo"};
 
 static int command_handler(char * command);
 
@@ -108,6 +108,10 @@ void run_prodcons(){
 	prodcons();
 }
 
+void run_philo(){
+	philosophers();
+}
+
 void try_process_args(){
 	process_args_test();
 }
@@ -160,7 +164,9 @@ void ayuda(){
 	print_f("alloc_test - prueba el memory manager \n");
 	print_f("process_args_test - prueba la creacion de un proceso con argumentos \n");
 	print_f("ipc_test - prueba los ipc \n");
-	print_f("prodcons - ejecuta el el proceso prodcons \n");
+	print_f("prodcons - ejecuta el proceso prodcons \n");
+	print_f("philo - ejecuta el proceso dining philosophers\n");
 	print_f("print - prueba el comando de print_f con el formato \"%%s \\n \" \n\n\n");
+
 	return;
 }

@@ -17,8 +17,8 @@ typedef struct arguments{
 
 typedef struct arguments* argumentsPointer;
 
-void createPhilosopher();
-void deletePhilosopher();
+void create_philosopher();
+void delete_philosopher();
 void test(int ph_id);
 void take_fork(int ph_id);
 void put_fork(int ph_id);

@@ -37,7 +37,7 @@ void * mem_alloc(size_t size){
         *((size_t *) ((char *) memory_base() + free_space_offset)) = aux;
         return (void *) ((char *) memory_base() + free_space_offset + sizeof(size_t));
     }//no encontramos hueco
-    if(split_upper_level(aux<<1, 0) == -1) return NULL; //no hay memoria disponible
+    if(split_upper_level(aux<<1, 0) == -1) no_memory_error(); //return NULL; //no hay memoria disponible
     return mem_alloc(size); //se dividió, intentamos de nuevo el pedido
 }
 

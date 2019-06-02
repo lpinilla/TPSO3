@@ -103,6 +103,8 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         return set_current_process_priority((int)rsi);
       case NEW_PROCESS_ARGS:
         return (uint64_t)new_process_args(rsi, (char *)rdx, (int)rcx, 1, (int)r8, (void **)r9);
+      case NO_MEM_ERROR:
+        no_memory_error();
   }
 	return 0;
 }
@@ -150,4 +152,9 @@ size_t new_process_args(uint64_t process_start, char * process_name, int foregro
   }
   run_process(new_process);
   return get_pid(new_process);
+}
+
+void no_memory_error(){
+  clear_screen();
+  draw_err_string("No memory available");
 }
