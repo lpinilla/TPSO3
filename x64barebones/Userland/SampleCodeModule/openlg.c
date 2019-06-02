@@ -40,6 +40,47 @@ void draw_fill_square(int x, int y, unsigned char r, unsigned char g, unsigned  
     }
 }
 
+void draw_fill_rect_triangle(int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char height){
+    for(int i = y, t = 0; i < (height + y); i++, t++){
+        for(int j = x; j < (x+t); j++){
+            sys_draw_pixel(j,i,r,g,b);
+        }
+    }
+}
+
+void draw_fill_rect_triangle_rot_90(int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char height){
+    for (int i = y, t = height; i < height + y; i++, t--) {
+        for (int j = x; j < (x + t); j++) {
+            sys_draw_pixel(j,i, r,g,b);
+        }
+    }
+}
+
+void draw_fill_rect_triangle_rot_180(int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char height){
+    for (int i = y, t = 0; i < height + y; i++, t++) {
+        for (int j = x; j < (x + height -t); j++) {
+            sys_draw_pixel(j,i, r,g,b);
+        }
+        x++;
+    }
+}
+
+void draw_fill_rect_triangle_rot_270(int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char height){
+    for (int i = y, t = 0; i < height + y; i++, t++) {
+        for (int j = x + height - t; j < (x + height); j++) {
+            sys_draw_pixel(j,i, r,g,b);
+        }
+    }
+}
+
+void draw_fill_iso_triangle_rot_180(int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char height){
+    for (int i = y, t = height; i < height + y; i++, t--) {
+        for (int j = (x+ height - t); j < (x + t); j++) {
+            sys_draw_pixel(j,i, r,g,b);
+        }
+    }
+}
+
 void draw_fill_rect(int x, int y, unsigned char r, unsigned char g, unsigned   char b,
                      unsigned char base, unsigned char height) {
     for (int i = y; i < height + y; i++) {

@@ -10,6 +10,7 @@ static int command_handler(char * command);
 
 uint64_t * shell(void){
 	draw_welcome_screen();
+	philosophers();
 
 	int command_id=INVALID_COMMAND;
 	print_user();
