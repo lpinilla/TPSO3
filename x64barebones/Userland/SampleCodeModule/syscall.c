@@ -39,6 +39,8 @@
 #define NICE 39
 #define OPEN_FD 40
 #define CLOSE_FD 41
+#define CREATE_N_PIPE 42
+#define DELETE_FILE 43
 
 void sys_write(char * string, int size){
   _call_int_80( (uint64_t) WRITE, 1, (uint64_t) string, (uint64_t)size, 0, 0);
@@ -177,4 +179,12 @@ int sys_open_fd(char * path, fd_t type){
 
 int sys_close_fd(int fd){
 	return (int)_call_int_80(CLOSE_FD,(uint64_t) fd, 0, 0, 0, 0);
+}
+
+int sys_create_n_pipe(char * path){
+	return(int)_call_int_80(CREATE_N_PIPE, (uint64_t) path, 0, 0, 0, 0);
+}
+
+int sys_delete_file(char * path){
+	return (int)_call_int_80(DELETE_FILE, (uint64_t) path, 0, 0, 0 , 0);
 }

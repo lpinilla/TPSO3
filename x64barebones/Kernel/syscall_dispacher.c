@@ -108,6 +108,12 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
       case CLOSE_FD:
         return close_fd((int)rsi);
         break;
+      case CREATE_N_PIPE:
+        return create_n_pipe((char *) rsi);
+        break;
+      case DELETE_FILE:
+        return delete_file((char *) rsi);
+        break;
   }
 	return 0;
 }

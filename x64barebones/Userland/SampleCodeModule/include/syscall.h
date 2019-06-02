@@ -42,5 +42,9 @@ void sys_print_mem_list();
 void sys_ipc_read(int id, char * msg_ret);
 void sys_ipc_write(char * msg, int id);
 int sys_create_priority_process(void * function, char * name, pground_t process_ground, ppriority_t priority);
+int sys_open_fd(char * path, fd_t type);
+int sys_close_fd(int fd);
+int sys_create_n_pipe(char * path);
+int sys_delete_file(char * path);
 
 #endif
