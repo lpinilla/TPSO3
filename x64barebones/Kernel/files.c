@@ -26,7 +26,7 @@ int create_file(char * path, file_t type) {
         if(first_empty==-1 && file_table[i]==NULL){
             first_empty=i;
         }
-        if(str_cmp(path,file_table[i]->path) ){
+        if(str_cmp(path,file_table[i]->path) == 0){
             unlock_mutex(&working_file);
             return i;
         }
@@ -46,7 +46,7 @@ int create_file(char * path, file_t type) {
 int delete_file(char * path) {
     lock_mutex(&working_file);
     for(int i=0; i<MAX_ENTRIES; i++) {
-        if(str_cmp(path, file_table[i]->path)){
+        if(str_cmp(path, file_table[i]->path) == 0){
             free_mem(file_table[i]->entry);
             free_mem(file_table[i]);
             unlock_mutex(&working_file);
