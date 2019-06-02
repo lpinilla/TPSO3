@@ -1,7 +1,4 @@
-#include <fds.h>
-
-typedef struct fd_infoADT * fd_info_t;
-typedef struct inodeADT * inode_t;
+#include <files.h>
 
 static int working_file=1;
 
@@ -11,12 +8,8 @@ typedef struct inodeADT {
     char path[MAX_PATH];
     int offset;
     void * entry;
+    file_t type;
 } inodeADT;
-
-typedef struct fd_infoADT {
-    inode_t file;
-    fd_t type;
-}fd_infoADT;
 
 void init_tables(){
     for(int i=0;i < MAX_ENTRIES; i++) {
@@ -24,7 +17,7 @@ void init_tables(){
     }
 }
 
-int create_file(char * path) {
+int create_file(char * path, file_t type) {
     int first_empty=-1;
     lock_mutex(&working_file);
     for(int i=0; i<MAX_ENTRIES;i ++) {
@@ -41,6 +34,7 @@ int create_file(char * path) {
         aux->offset=0;
         aux->entry= mem_alloc(INODE_BUFFER);
         str_cpy(aux->path, path);
+        aux->type=type;
         file_table[first_empty] = aux;
     }
     unlock_mutex(&working_file);
@@ -59,4 +53,8 @@ int delete_file(char * path) {
     }
     unlock_mutex(&working_file);
     return 1;
+}
+
+int create_n_pipe(char * path){
+    return create_file(path, N_PIPE);
 }

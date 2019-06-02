@@ -12,7 +12,9 @@
 #define MAX_FD 50
 
 typedef enum {P_READY, P_RUNNING, P_WAITING, P_TERMINATE} pstate_t;
+typedef enum {STDIN, STDOUT, STDERR, BUFFER} fd_t;
 
+typedef struct fd_infoADT * fd_info_t;
 typedef struct processADT * process_t;
 
 void init_processes();

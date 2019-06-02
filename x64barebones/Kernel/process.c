@@ -3,6 +3,14 @@
 #include <mem_manager.h>
 #include <graphics.h>
 #include <interrupts.h>
+#include <files.h>
+
+static void init_fds(process_t process);
+
+typedef struct fd_infoADT {
+    inode_t file;
+    fd_t type;
+}fd_infoADT;
 
 typedef struct processADT {
 	char * name[MAX_PROCESS_NAME];
@@ -12,7 +20,7 @@ typedef struct processADT {
 	uint64_t stack_start;
     uint64_t stack_pointer;
 	int priority;
-	int fds[MAX_FD];
+	fd_info_t fds[MAX_FD];
 } processADT;
 
 typedef struct {
@@ -68,9 +76,7 @@ process_t create_process(uint64_t process_start, char * process_name, int priori
 	new_process->stack_start = (uint64_t)mem_alloc(STACK_SIZE);
     new_process->stack_pointer = init_stack(new_process, process_start, new_process->stack_start);
 	new_process->priority = priority;
-	for(int i=0; i<MAX_FD; i++){
-		new_process->fds[i]=-1;
-	}
+	init_fds(new_process);
 	if(global_pid != 0){
 		new_process->ppid = get_current_process()->pid;
 	}
@@ -220,4 +226,16 @@ int set_priority(int pid, int priority) {
 	}
 	all_processes[pid]->priority=priority;
 	return priority;
+}
+
+static void init_fds(process_t process){
+	process->fds[0] = mem_alloc(sizeof(fd_infoADT));
+	process->fds[1] = mem_alloc(sizeof(fd_infoADT));
+	process->fds[2] = mem_alloc(sizeof(fd_infoADT));
+	process->fds[0]->type=STDIN;
+	process->fds[1]->type=STDOUT;
+	process->fds[2]->type=STDERR;
+	for(int i=3; i<MAX_FD; i++){
+		process->fds[i]=NULL;
+	}
 }
