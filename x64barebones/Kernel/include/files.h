@@ -13,7 +13,7 @@ typedef enum {N_PIPE} file_t;
 typedef struct inodeADT * inode_t;
 
 // inits the table with NULL
-void init_table();
+void init_tables();
 // create a "file" with path, if path already exist it doesnt create it
 int create_file(char * path, file_t type);
 // it deletes file with path "path"

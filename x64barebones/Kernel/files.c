@@ -1,6 +1,6 @@
 #include <files.h>
 
-static int working_file=1;
+static int working_file=0;
 
 static inode_t file_table[MAX_ENTRIES];
 
@@ -19,7 +19,9 @@ void init_tables(){
 
 int create_file(char * path, file_t type) {
     int first_empty=-1;
+    draw_number(1);
     lock_mutex(&working_file);
+    draw_number(2);
     for(int i=0; i<MAX_ENTRIES;i ++) {
         if(first_empty==-1 && file_table[i]==NULL){
             first_empty=i;
