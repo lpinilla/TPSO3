@@ -8,33 +8,38 @@ static int ph_count;
 static int ph_id;
 static int ph_mutex;
 char c;
+static char * philo_name="Philosopher N";
+
 
 
 void create_philosopher(){
-	        ph_count++;
-		    semaphores[ph_count] = sys_sem_open((void*) (long) ph_id);
-		    state[ph_id] = THINKING;
-            argumentsPointer arg=sys_my_malloc(sizeof(arguments));
-            arg->ph_id=ph_id;
-            ph_id++;
-		    philo_process[ph_id]=sys_create_args_process(philosopher,"mmimi",BACKGROUND,1,(void**)arg);
-            //sys_create_process(philosopher,"mimi",BACKGROUND);
-    
+    argumentsPointer arg=sys_my_malloc(sizeof(arguments));
+    if(arg==NULL){
+        print_f("Malloc Error, cant create more philosophers\n");
+    }
+    else{
+        philo_name[12]=(char)(ph_id + '0');
+	    semaphores[ph_count] = sys_sem_open((void*) (long) ph_id);
+	    state[ph_id] = THINKING;
+        ph_count++;
+        arg->ph_id=ph_id;
+        ph_id++;
+	    philo_process[ph_id]=sys_create_args_process(philosopher,philo_name,BACKGROUND,1,(void**)arg);
+    }
 	//exit?
 }
 
 void philosopher(int argc,argumentsPointer arg) {
-        sys_sleep(1); 
+    while(1){
+        sys_sleep(2); 
         take_fork(arg->ph_id); 
-        sys_sleep(1); 
+        sys_sleep(2); 
         put_fork(arg->ph_id); 
-
+    }
     
 }
 
 void delete_philosopher(){
-       
-		
 		sys_sem_close(semaphores[ph_count-1]);
 	    ph_count--;
         sys_kill_process(philo_process[--ph_id]);
@@ -51,14 +56,12 @@ void test(int id) {
         forkState[id]=id;
         
   
-        sys_sleep(2); 
+        sys_sleep(5); 
   
         print_ph_state();
   
-        // sem_post(&S[phnum]) has no effect 
-        // during takefork 
-        // used to wake up hungry philosophers 
-        // during putfork 
+        // sem_post(&S[phnum]) has no effect during takefork 
+        // used to wake up hungry philosophers during putfork 
         sys_sem_post(semaphores[id]); 
     } 
 }
@@ -80,7 +83,7 @@ void take_fork(int id)
     // if unable to eat wait to be signalled 
     sys_sem_wait(semaphores[id]); 
   
-    sys_sleep(1); 
+    sys_sleep(5); 
 } 
 
 void put_fork(int id) 
@@ -142,7 +145,8 @@ void philosophers() {
 	ph_id = 0; 
     ph_mutex=0;
     int running=1;
-    char * philo_name="Philosopher N";
+    // int create_process; ver!
+    // int delete_process;
     
     for(int i=0;i<MAXPHILO;i++){
         forkState[i]=MAXPHILO;
@@ -160,16 +164,14 @@ void philosophers() {
         switch (c){
             case 'c':
                 if(ph_count<MAXPHILO){
-                    philo_name[12]=(char)(ph_id + '0');
-                    sys_create_process(create_philosopher,philo_name,BACKGROUND);            
+                    sys_create_process(create_philosopher,"Create philo",BACKGROUND);            
 
                 }
                 break;
 
             case 'd':
                 if(ph_count>0){
-                    philo_name[12]=(char)(ph_id + '0');
-                    sys_create_process(delete_philosopher,philo_name,BACKGROUND);
+                    sys_create_process(delete_philosopher,"Delete Philo",BACKGROUND);
 
                 }
                 break;
@@ -178,7 +180,8 @@ void philosophers() {
                 while (ph_count>0){
                     delete_philosopher();
                 }
-                sys_sem_close(semaphores[ph_count-1]);               
+                sys_sem_close(semaphores[ph_count-1]);  
+                sys_print_all_procceses();
                 break;
         }
         
