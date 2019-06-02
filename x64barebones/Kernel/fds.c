@@ -8,7 +8,7 @@ static int working_file=1;
 static inode_t file_table[MAX_ENTRIES];
 
 typedef struct inodeADT {
-    char * path[MAX_PATH];
+    char path[MAX_PATH];
     int offset;
     void * entry;
 } inodeADT;
@@ -43,7 +43,7 @@ int create_file(char * path) {
         str_cpy(aux->path, path);
         file_table[first_empty] = aux;
     }
-    mutex_unlock(&working_file);
+    unlock_mutex(&working_file);
     return first_empty;
 }
 
