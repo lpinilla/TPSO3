@@ -239,3 +239,18 @@ static void init_fds(process_t process){
 		process->fds[i]=NULL;
 	}
 }
+
+int open(char * path, fd_t type){
+	inode_t aux = get_file(path);
+	if(aux==NULL)
+		return -1;
+	process_t current = get_current_process();
+	for(int i=0; i<MAX_FD; i++){
+		if(current->fds[i]==NULL){
+			current->fds[i]->type= type;
+			current->fds[i]->file=aux;
+			return i;
+		}
+	}
+	return -1;
+}

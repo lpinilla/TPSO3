@@ -55,6 +55,14 @@ int delete_file(char * path) {
     return 1;
 }
 
+inode_t get_file(char * path){
+    for(int i=0; i<MAX_ENTRIES; i++){
+        if(str_cmp(path, file_table[i]->path))
+            return file_table[i];
+    }
+    return NULL;
+}
+
 int create_n_pipe(char * path){
     return create_file(path, N_PIPE);
 }

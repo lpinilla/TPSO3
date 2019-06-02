@@ -20,4 +20,6 @@ int create_file(char * path, file_t type);
 int delete_file(char * path);
 // wrapper for creating named pipe
 int create_n_pipe(char * path);
+// search for files and return null if file dont exists
+inode_t get_file(char * path);
 #endif

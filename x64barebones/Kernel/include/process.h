@@ -12,7 +12,7 @@
 #define MAX_FD 50
 
 typedef enum {P_READY, P_RUNNING, P_WAITING, P_TERMINATE} pstate_t;
-typedef enum {STDIN, STDOUT, STDERR, BUFFER} fd_t;
+typedef enum {STDIN, STDOUT, STDERR, R_ONLY, W_ONLY} fd_t;
 
 typedef struct fd_infoADT * fd_info_t;
 typedef struct processADT * process_t;
@@ -33,5 +33,7 @@ int is_current_process_foreground();
 void set_current_process_terminate();
 int get_priority(process_t process);
 int set_priority(int pdi, int priority);
+// search for path and create fd with type, if file doesnt exist return -1
+int open(char * path, fd_t type);
 
 #endif
