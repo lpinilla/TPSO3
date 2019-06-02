@@ -31,9 +31,9 @@ void create_philosopher(){
 
 void philosopher(int argc,argumentsPointer arg) {
     while(1){
-        sys_sleep(2); 
+        sys_sleep(5); 
         take_fork(arg->ph_id); 
-        sys_sleep(2); 
+        sys_sleep(5); 
         put_fork(arg->ph_id); 
     }
     
@@ -164,7 +164,7 @@ void philosophers() {
         switch (c){
             case 'c':
                 if(ph_count<MAXPHILO){
-                    sys_create_process(create_philosopher,"Create philo",BACKGROUND);            
+                    create_philosopher();
 
                 }
                 break;
