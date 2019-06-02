@@ -247,10 +247,20 @@ int open(char * path, fd_t type){
 	process_t current = get_current_process();
 	for(int i=0; i<MAX_FD; i++){
 		if(current->fds[i]==NULL){
+			current->fds[i]=mem_alloc(sizeof(fd_infoADT));
 			current->fds[i]->type= type;
 			current->fds[i]->file=aux;
 			return i;
 		}
 	}
 	return -1;
+}
+
+int close(int fd_pos){
+	process_t current = get_current_process();
+	if(current->fds[fd_pos]!=NULL){
+		free_mem(current->fds[fd_pos]);
+		return 0;
+	}
+	return 1;
 }

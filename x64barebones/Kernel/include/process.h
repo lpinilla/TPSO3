@@ -35,5 +35,7 @@ int get_priority(process_t process);
 int set_priority(int pdi, int priority);
 // search for path and create fd with type, if file doesnt exist return -1
 int open(char * path, fd_t type);
+// close the fd, if exist return 0, if error return 1
+int close(int fd_pos);
 
 #endif
