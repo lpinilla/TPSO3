@@ -3,20 +3,21 @@
 int state[MAXPHILO]; 
 int forkState[MAXPHILO];
 int semaphores[MAXPHILO];
+int philo_process[MAXPHILO];
 static int ph_count;
 static int ph_id;
 static int ph_mutex;
 char c;
 
 
-void createPhilosopher(){
+void create_philosopher(){
 	        ph_count++;
 		    semaphores[ph_count] = sys_sem_open((void*) (long) ph_id);
 		    state[ph_id] = THINKING;
             argumentsPointer arg=sys_my_malloc(sizeof(arguments));
             arg->ph_id=ph_id;
             ph_id++;
-		    sys_create_args_process(philosopher,"mmimi",BACKGROUND,1,(void**)arg);
+		    philo_process[ph_id]=sys_create_args_process(philosopher,"mmimi",BACKGROUND,1,(void**)arg);
             //sys_create_process(philosopher,"mimi",BACKGROUND);
     
 	//exit?
@@ -31,15 +32,12 @@ void philosopher(int argc,argumentsPointer arg) {
     
 }
 
-void deletePhilosopher(){
+void delete_philosopher(){
        
-		    if(ph_count > 1){
-			    sys_sem_close(semaphores[ph_count-1]);
-			    ph_count--;
-			    ph_id--;
-                //terminar proceso?
-		    }
-	//exit?
+		
+		sys_sem_close(semaphores[ph_count-1]);
+	    ph_count--;
+        sys_kill_process(philo_process[--ph_id]);
 }
 
 void test(int id) { 
@@ -126,6 +124,8 @@ void print_ph_state() {
             print_f("Right Owner %d\n\n",forkState[i]);
         }
 	}
+    print_f("----------------------------\n");
+
 
 }
 
@@ -142,6 +142,7 @@ void philosophers() {
 	ph_id = 0; 
     ph_mutex=0;
     int running=1;
+    char * philo_name="Philosopher N";
     
     for(int i=0;i<MAXPHILO;i++){
         forkState[i]=MAXPHILO;
@@ -151,23 +152,36 @@ void philosophers() {
     
 	print_f("Press 'c' to create a new philosopher.\n");
     print_f("Press 'd' to delete one philosopher.\n");
+    print_f("Press 'q' to quit dining philosophers\n");
 
     while(running){
         
         c=get_char();
         switch (c){
             case 'c':
-		        sys_create_process(createPhilosopher,"mmimi",BACKGROUND);            
+                if(ph_count<MAXPHILO){
+                    philo_name[12]=(char)(ph_id + '0');
+                    sys_create_process(create_philosopher,philo_name,BACKGROUND);            
+
+                }
                 break;
 
             case 'd':
-                sys_create_process(deletePhilosopher,(void*)(long)ph_id,BACKGROUND);
-            break;
-            
+                if(ph_count>0){
+                    philo_name[12]=(char)(ph_id + '0');
+                    sys_create_process(delete_philosopher,philo_name,BACKGROUND);
+
+                }
+                break;
+            case 'q':
+                running=0;
+                while (ph_count>0){
+                    delete_philosopher();
+                }
+                sys_sem_close(semaphores[ph_count-1]);               
+                break;
         }
-        {
         
-        }
     }
 
 	
