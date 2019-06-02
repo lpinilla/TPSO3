@@ -28,4 +28,9 @@ void philosophers();
 int left();
 int right();
 
+extern int state[MAXPHILO]; 
+extern int forkState[MAXPHILO];
+extern int ph_count;
+
+
 #endif

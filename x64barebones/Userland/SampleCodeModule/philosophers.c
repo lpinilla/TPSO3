@@ -1,12 +1,15 @@
 #include <philosophers.h>
+#include <philo_ui.h>
 
-int state[MAXPHILO]; 
-int forkState[MAXPHILO];
-int semaphores[MAXPHILO];
-static int ph_count;
+
+
 static int ph_id;
 static int ph_mutex;
 char c;
+int state[MAXPHILO]; 
+int forkState[MAXPHILO];
+int ph_count;
+int semaphores[MAXPHILO];
 
 
 void createPhilosopher(){
@@ -138,7 +141,7 @@ int right(int id){
 
 void philosophers() {
     //Setup
-	ph_count = 0;
+	ph_count = 2; //para testear ui
 	ph_id = 0; 
     ph_mutex=0;
     int running=1;
@@ -148,13 +151,13 @@ void philosophers() {
     }
         sys_clear_console();
 
-    
+    //print_ui();
 	print_f("Press 'c' to create a new philosopher.\n");
     print_f("Press 'd' to delete one philosopher.\n");
 
     while(running){
         
-        c=get_char();
+        c=get_key();
         switch (c){
             case 'c':
 		        sys_create_process(createPhilosopher,"mmimi",BACKGROUND);            
@@ -164,9 +167,6 @@ void philosophers() {
                 sys_create_process(deletePhilosopher,(void*)(long)ph_id,BACKGROUND);
             break;
             
-        }
-        {
-        
         }
     }
 
