@@ -21,6 +21,7 @@ DEFINE Y DESPUES EN EL VECTOR DE STRINGS ENE EL NUMERO DEL DEFINE -1 (podriamos 
 #include <ipc_test.h>
 #include <prodcons.h>
 #include <process_args_test.h>
+#include <philosophers.h>
 
 #define RETURN_ADRESS 0xDEADC0DE
 
@@ -35,7 +36,7 @@ DEFINE Y DESPUES EN EL VECTOR DE STRINGS ENE EL NUMERO DEL DEFINE -1 (podriamos 
 #define PRINT_F 8
 #define INVALID 9
 
-#define COMMANDS 17
+#define COMMANDS 18
 
 #define MAX_LENGTH 20
 
@@ -61,6 +62,7 @@ void try_alloc();
 void try_ipc();
 void run_prodcons();
 void ps();
+void run_philo();
 void try_process_args();
 uint64_t * shell();
 

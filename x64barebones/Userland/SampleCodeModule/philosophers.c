@@ -1,51 +1,57 @@
 #include <philosophers.h>
 
-
 int state[MAXPHILO]; 
 int forkState[MAXPHILO];
 int semaphores[MAXPHILO];
-int ph_count;
-int static ph_id;
-int ph_mutex;
+static int ph_count;
+static int ph_id;
+static int ph_mutex;
 char c;
 
 
 void createPhilosopher(){
-	while(1){
-        if((c=get_char())=='c'){
-		semaphores[ph_count] = sys_sem_open((void*) (long) ph_id);
-		//philosopherId[ph_count] = id;
-		state[ph_count] = 2;
-		ph_id++;
-		ph_count++;
-		sys_create_process(philosopher,(void*)(long)ph_id,BACKGROUND);
-        }
-	}
+	        ph_count++;
+		    semaphores[ph_count] = sys_sem_open((void*) (long) ph_id);
+		    state[ph_id] = THINKING;
+            argumentsPointer arg=sys_my_malloc(sizeof(arguments));
+            arg->ph_id=ph_id;
+            ph_id++;
+		    sys_create_args_process(philosopher,"mmimi",BACKGROUND,1,(void**)arg);
+            //sys_create_process(philosopher,"mimi",BACKGROUND);
+    
 	//exit?
 }
 
+void philosopher(int argc,argumentsPointer arg) {
+        sys_sleep(1); 
+        take_fork(arg->ph_id); 
+        sys_sleep(1); 
+        put_fork(arg->ph_id); 
+
+    
+}
+
 void deletePhilosopher(){
-	while(1){
-        if((c=get_char())=='d'){
+       
 		    if(ph_count > 1){
 			    sys_sem_close(semaphores[ph_count-1]);
 			    ph_count--;
 			    ph_id--;
                 //terminar proceso?
 		    }
-        }
-	}
-
 	//exit?
 }
 
-void test(int ph_id) 
-{ 
-    if (state[ph_id] == 1
-        && state[(ph_id + ph_count - 1) % ph_count] != 0 //agarro comensal izquiero
-        && state[(ph_id + 1) % ph_count] != 0) { //agarro comensal derecho
+void test(int id) { 
+    if (state[id] == HUNGRY && ph_count>1
+        && state[left(id)] != EATING //agarro comensal izquiero
+        && state[right(id)] != EATING) { //agarro comensal derecho
         // state that eating 
-        state[ph_id] = 0; 
+
+        state[id] = EATING; 
+        forkState[left(id)]=id;
+        forkState[id]=id;
+        
   
         sys_sleep(2); 
   
@@ -55,88 +61,115 @@ void test(int ph_id)
         // during takefork 
         // used to wake up hungry philosophers 
         // during putfork 
-        sys_sem_post(semaphores[ph_id]); 
+        sys_sem_post(semaphores[id]); 
     } 
 }
 
-void take_fork(int ph_id) 
+void take_fork(int id) 
 { 
-  
+
     sys_lock(&ph_mutex); 
-  
+
     // state that hungry 
-    state[ph_id] = 1;  
-  
+    state[id] = HUNGRY;  
     print_ph_state();
 
     // eat if neighbours are not eating 
-    test(ph_id); 
+    test(id); 
   
     sys_unlock(&ph_mutex); 
   
     // if unable to eat wait to be signalled 
-    sys_sem_wait(semaphores[ph_id]); 
+    sys_sem_wait(semaphores[id]); 
   
     sys_sleep(1); 
 } 
 
-void put_fork(int ph_id) 
+void put_fork(int id) 
 { 
-  
    sys_lock(&ph_mutex); 
   
     // state that thinking 
-    state[ph_id] = 2; 
-  
+    state[id] = THINKING; 
+    forkState[left(id)]=MAXPHILO;
+    forkState[id]=MAXPHILO;
+    
     print_ph_state();
-  
-    test((ph_id + ph_count - 1) % ph_count); //izquierdo
-    test((ph_id + 1) % ph_count); //derecho
-  
-    sys_unlock(&ph_mutex); 
+    test(left(id));
+    test(right(id));
+    sys_unlock(&ph_mutex);
+    
 } 
 
 
-
-
-void philosopher(void* id) {
-        int* i = id; 
-        sys_sleep(1); 
-        take_fork(*i); 
-        sys_sleep(0); 
-        put_fork(*i); 
-    
-}
-
 void print_ph_state() {
 	for(int i = 0; i < ph_count; i++) {
-		print_f("Philosopher %d: %d \n", i, state[i]);
-		print_f("Fork - ");
-
-		if (forkState[i] == -1)
-			print_f("Free\n\n");
+		print_f("\nPhilosopher %d: ",i);
+        if( state[i]==THINKING){
+            print_f("THINKING\n");
+        }
+        else if(state[i]==HUNGRY){
+            print_f("HUNGRY\n");
+        }
+        else{
+            print_f("EATING\n");
+        }
+		print_f("Forks: ");
+		if (forkState[left(i)] == MAXPHILO)
+			print_f("Left Free , ");
 		else
-			print_f("Owner %d\n\n", forkState[i]);
+			print_f("Left Owner %d , ", forkState[left(i)]);
+        if(forkState[i]==MAXPHILO){
+            print_f("Right Free\n\n");
+        }
+        else{
+            print_f("Right Owner %d\n\n",forkState[i]);
+        }
 	}
 
 }
 
+int left(int id){
+    return (id + ph_count - 1) % ph_count;
+}
+int right(int id){
+    return (id+1)%ph_count;
+}
 
-
-void dining_philosophers() {
+void philosophers() {
     //Setup
 	ph_count = 0;
 	ph_id = 0; 
+    ph_mutex=0;
+    int running=1;
+    
+    for(int i=0;i<MAXPHILO;i++){
+        forkState[i]=MAXPHILO;
+    }
+        sys_clear_console();
 
-	
-    sys_clear_console();
+    
 	print_f("Press 'c' to create a new philosopher.\n");
     print_f("Press 'd' to delete one philosopher.\n");
 
-    sys_create_process(createPhilosopher,(void*)(long) ph_id,BACKGROUND);
-    sys_create_process(deletePhilosopher,(void*)(long)ph_id,BACKGROUND);
+    while(running){
+        
+        c=get_char();
+        switch (c){
+            case 'c':
+		        sys_create_process(createPhilosopher,"mmimi",BACKGROUND);            
+                break;
+
+            case 'd':
+                sys_create_process(deletePhilosopher,(void*)(long)ph_id,BACKGROUND);
+            break;
+            
+        }
+        {
+        
+        }
+    }
 
 	
-	while(1);
-	
+
 }
