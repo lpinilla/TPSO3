@@ -34,7 +34,6 @@ int is_current_process_foreground();
 void set_current_process_terminate();
 int get_priority(process_t process);
 int set_priority(int pdi, int priority);
-<<<<<<< HEAD
 // search for path and create fd with type, if file doesnt exist return -1
 int open_fd(char * path, fd_t type);
 // close the fd, if exist return 0, if error return 1
@@ -43,7 +42,4 @@ int close_fd(int fd_pos);
 void write_fd(int fd, const char * buff, int q);
 // writes q chars in buff from the fd
 void read_fd(int fd, char * buff, int q);
-=======
-
->>>>>>> master
 #endif
