@@ -33,7 +33,8 @@ void run_process(process_t process);
 uint64_t switch_process(uint64_t stack_pointer);
 void print_current_processes();
 process_t get_current_process();
-int set_current_process_priority(int priority);
+void set_current_process_priority(int priority);
+void kill_current_process();
 
 #endif
 

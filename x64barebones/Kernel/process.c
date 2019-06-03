@@ -4,6 +4,7 @@
 #include <graphics.h>
 #include <interrupts.h>
 #include <files.h>
+#include <keyboard.h>
 
 static void init_fds(process_t process);
 
@@ -224,7 +225,8 @@ static uint64_t init_stack_args(process_t process, uint64_t process_start, uint6
 	return (uint64_t)frame;
 }
 
-void print_process(process_t process){
+void print_process(void * p){
+	process_t process = (process_t)p; 
 	draw_string("PID: ");
 	draw_number(process->pid);
 	draw_string(" PROCESS NAME: ");
@@ -348,6 +350,9 @@ void write_fd(int fd, const char * buff, int q){
 		case W_ONLY:
 			write_file(current->fds[fd]->file, buff, q);
 			break;
+		case STD_IN:
+		case R_ONLY:
+			break;
 	}
 }
 
@@ -361,6 +366,10 @@ void read_fd(int fd, char * buff, int q){
 			break;
 		case R_ONLY:
 			read_file(current->fds[fd]->file, buff, q);
+			break;
+		case STD_OUT:
+		case STD_ERR:
+		case W_ONLY:
 			break;
 	}
 }

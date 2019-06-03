@@ -23,6 +23,6 @@ int delete_file(char * path);
 int create_n_pipe(char * path);
 // search for files and return null if file dont exists
 inode_t get_file(char * path);
-int write_file(inode_t file, char * buff, int q);
+int write_file(inode_t file, const char * buff, int q);
 int read_file(inode_t file, char * buff, int q);
 #endif

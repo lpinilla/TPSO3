@@ -98,7 +98,7 @@ void put_fork(int id)
     // state that thinking 
     state[id] = THINKING; 
     forkState[left(id)]=MAXPHILO;
-    forkState[right(id)]=MAXPHILO;
+    forkState[id]=MAXPHILO;
     
     //print_ph_state();
            

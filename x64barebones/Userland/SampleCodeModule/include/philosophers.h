@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include "./syscall.h"
 #include "./utilities.h"
+#include <openlg.h>
 
 typedef struct arguments{
 	int ph_id;

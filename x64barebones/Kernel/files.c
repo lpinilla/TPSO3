@@ -72,17 +72,21 @@ int create_n_pipe(char * path){
     return create_file(path, N_PIPE);
 }
 
-int write_file(inode_t file, char * buff, int q){
-    for(int i=0; i<q; i++){
+int write_file(inode_t file, const char * buff, int q){
+    int i;
+    for(i=0; i<q; i++){
         *(file->end) = buff[i];
         file->end++;
         my_sem_post(file->sem);
     }
+    return i;
 }
 int read_file(inode_t file, char * buff, int q){
-    for(int i=0; i<q; i++){
+    int i;
+    for(i=0; i<q; i++){
         my_sem_wait(file->sem);
         buff[i] = *(file->start);
         file->start++;
     }
+    return i;
 }

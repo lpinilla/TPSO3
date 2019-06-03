@@ -41,4 +41,5 @@ static void process_2(){
     print_f("Escribiendo Chau en el pipe mediante el fd creado \n");
     sys_write_fd(fd, "Chau", 4);
     sys_close_fd(fd);
+    return;
 }
