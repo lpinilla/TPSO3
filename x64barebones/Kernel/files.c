@@ -20,7 +20,6 @@ void init_tables(){
 }
 
 int create_file(char * path, file_t type) {
-    draw_string(path);
     int first_empty=-1;
     lock_mutex(&working_file);
     for(int i=0; i<MAX_ENTRIES;i ++) {
@@ -63,7 +62,7 @@ int delete_file(char * path) {
 
 inode_t get_file(char * path){
     for(int i=0; i<MAX_ENTRIES; i++){
-        if(str_cmp(path, file_table[i]->path))
+        if(str_cmp(path, file_table[i]->path)==0)
             return file_table[i];
     }
     return NULL;
