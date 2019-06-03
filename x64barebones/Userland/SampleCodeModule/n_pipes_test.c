@@ -15,5 +15,5 @@ static void process_1(){
     char msg[5];
     int fd = sys_open_fd("/Hola", W_ONLY);
     sys_read_fd(fd, msg, 5);
-    print_f(msg);
+    print_f("%s", msg);
 }

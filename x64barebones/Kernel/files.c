@@ -20,10 +20,9 @@ void init_tables(){
 }
 
 int create_file(char * path, file_t type) {
+    draw_string(path);
     int first_empty=-1;
-    draw_number(1);
     lock_mutex(&working_file);
-    draw_number(2);
     for(int i=0; i<MAX_ENTRIES;i ++) {
         if(first_empty==-1 && file_table[i]==NULL){
             first_empty=i;
@@ -39,7 +38,7 @@ int create_file(char * path, file_t type) {
         aux->entry= mem_alloc(INODE_BUFFER);
         aux->start=aux->entry;
         aux->end=aux->entry;
-        str_cpy(aux->path, path);
+        str_cpy(path, aux->path);
         aux->type=type;
         file_table[first_empty] = aux;
     }
