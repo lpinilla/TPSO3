@@ -56,6 +56,8 @@
 #define CLOSE_FD 41
 #define CREATE_N_PIPE 42
 #define DELETE_FILE 43
+#define READ_FD 44
+#define WRITE_FD 45
 
 //si pongo #include <mem_manager.h> se rompe
 void * mem_alloc(size_t size);

@@ -41,6 +41,16 @@
 #define CLOSE_FD 41
 #define CREATE_N_PIPE 42
 #define DELETE_FILE 43
+#define READ_FD 44
+#define WRITE_FD 45
+
+void sys_read_fd(int fd, char * buff, int q){
+	_call_int_80((uint64_t)READ_FD, (uint64_t) fd, (uint64_t) buff, (uint64_t) q, 0, 0);
+}
+
+void sys_write_fd(int fd, char * buff, int q){
+	_call_int_80((uint64_t)WRITE_FD, (uint64_t) fd, (uint64_t) buff, (uint64_t) q, 0, 0);
+}
 
 void sys_write(char * string, int size){
   _call_int_80( (uint64_t) WRITE, 1, (uint64_t) string, (uint64_t)size, 0, 0);

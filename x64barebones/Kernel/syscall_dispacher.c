@@ -114,6 +114,11 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
       case DELETE_FILE:
         return delete_file((char *) rsi);
         break;
+      case READ_FD:
+        read_fd((int)rsi,(char *)rdx, (int)rcx);
+        break;
+      case WRITE_FD:
+        write_fd((int)rsi, (char *)rdx, (int)rcx);
   }
 	return 0;
 }
