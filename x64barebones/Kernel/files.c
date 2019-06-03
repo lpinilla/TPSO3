@@ -68,3 +68,9 @@ inode_t get_file(char * path){
 int create_n_pipe(char * path){
     return create_file(path, N_PIPE);
 }
+
+int write_file(inode_t file, char * buff, int q){
+}
+int read_file(inode_t file, char * buff, int q){
+    
+}

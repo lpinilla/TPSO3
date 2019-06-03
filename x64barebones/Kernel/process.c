@@ -264,3 +264,24 @@ int close_fd(int fd_pos){
 	}
 	return 1;
 }
+
+void write_fd(int fd, const char * buff, int q){
+	process_t current = get_current_process();
+	switch(current->fds[fd]->type){
+		case STD_OUT:
+			for(int i=0; i<q; i++){
+				draw_char(*buff);
+				buff++;
+			}
+			break;
+		case STD_ERR:
+			for(int i=0; i<q; i++){
+				draw_err_char(*buff);
+				buff++;
+			}
+			break;
+		case W_ONLY:
+			write_file(current->fds[fd]->file, buff, q);
+			break;
+	}
+}

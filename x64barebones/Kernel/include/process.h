@@ -37,5 +37,7 @@ int set_priority(int pdi, int priority);
 int open_fd(char * path, fd_t type);
 // close the fd, if exist return 0, if error return 1
 int close_fd(int fd_pos);
+// writes in the fd of current process
+void write_fd(int fd, const char * buff, int q);
 
 #endif
