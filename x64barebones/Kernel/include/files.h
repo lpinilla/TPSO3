@@ -4,6 +4,7 @@
 #include <mem_manager.h>
 #include <stdlib.h>
 #include <mutex.h>
+#include <semaphore.h>
 
 #define MAX_ENTRIES 256
 #define MAX_PATH 30

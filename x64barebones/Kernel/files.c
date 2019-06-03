@@ -6,8 +6,10 @@ static inode_t file_table[MAX_ENTRIES];
 
 typedef struct inodeADT {
     char path[MAX_PATH];
-    int offset;
-    void * entry;
+    int sem;
+    char * entry;
+    char * start;
+    char * end;
     file_t type;
 } inodeADT;
 
@@ -33,8 +35,10 @@ int create_file(char * path, file_t type) {
     }
     if(first_empty!= -1) {
         inode_t aux = mem_alloc(sizeof(inodeADT));
-        aux->offset=0;
+        aux->sem = my_sem_open(path);
         aux->entry= mem_alloc(INODE_BUFFER);
+        aux->start=aux->entry;
+        aux->end=aux->entry;
         str_cpy(aux->path, path);
         aux->type=type;
         file_table[first_empty] = aux;
@@ -48,6 +52,7 @@ int delete_file(char * path) {
     for(int i=0; i<MAX_ENTRIES; i++) {
         if(str_cmp(path, file_table[i]->path) == 0){
             free_mem(file_table[i]->entry);
+            my_sem_close(file_table[i]->sem);
             free_mem(file_table[i]);
             unlock_mutex(&working_file);
             return 0;
@@ -70,7 +75,16 @@ int create_n_pipe(char * path){
 }
 
 int write_file(inode_t file, char * buff, int q){
+    for(int i=0; i<q; i++){
+        *(file->end) = buff[i];
+        file->end++;
+        my_sem_post(file->sem);
+    }
 }
 int read_file(inode_t file, char * buff, int q){
-    
+    for(int i=0; i<q; i++){
+        my_sem_wait(file->sem);
+        buff[i] = *(file->start);
+        file->start++;
+    }
 }
