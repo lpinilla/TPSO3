@@ -26,6 +26,6 @@ char get_char();
 #define TRUE                    1
 #define FALSE                   0
 #define MAX_BUFF_SIZE           512
-#define EOF -1
+#define EOF (-1)
 
 #endif

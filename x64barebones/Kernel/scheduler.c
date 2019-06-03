@@ -213,6 +213,6 @@ process_t get_current_process(){
     return  scheduler->current_process;
 }
 
-int set_current_process_priority(int priority){
-    set_priority(scheduler->current_process, priority);
+void set_current_process_priority(int priority){
+    set_priority(get_pid(scheduler->current_process), priority);
 }

@@ -25,7 +25,7 @@ void set_state(process_t process, pstate_t state);
 void set_state_id(size_t pid, pstate_t state);
 pstate_t get_state(process_t process);
 void set_stack_pointer(process_t process, uint64_t stack_pointer);
-void print_process(process_t process);
+void print_process(void * p);
 size_t get_pid(process_t process);
 uint64_t get_stack_pointer(process_t process);
 pstate_t get_state_id(size_t pid);
