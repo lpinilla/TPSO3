@@ -3,7 +3,7 @@
 int state[MAXPHILO]; 
 int forkState[MAXPHILO];
 int semaphores[MAXPHILO];
-int philo_process[MAXPHILO];
+static int philo_process[MAXPHILO];
 static int ph_count;
 static int ph_id;
 static int ph_mutex;
@@ -23,16 +23,22 @@ void create_philosopher(){
 	    state[ph_id] = THINKING;
         ph_count++;
         arg->ph_id=ph_id;
-        ph_id++;
 	    philo_process[ph_id]=sys_create_args_process(philosopher,philo_name,BACKGROUND,1,(void**)arg);
+        ph_id++;
+
+        // print_f("ID: ");
+        // for(int i=0;i<MAXPHILO;i++){
+        //     print_f("%d, ",philo_process[i]);
+        // }
+        // print_f("\n");
     }
 }
 
 void philosopher(int argc,argumentsPointer arg) {
     while(1){
-        sys_sleep(5); 
+        sys_sleep(30); 
         take_fork(arg->ph_id); 
-        sys_sleep(5); 
+        sys_sleep(30); 
         put_fork(arg->ph_id); 
     }
     
@@ -41,8 +47,21 @@ void philosopher(int argc,argumentsPointer arg) {
 void delete_philosopher(){
 		sys_sem_close(semaphores[ph_count-1]);
 	    ph_count--;
-        sys_kill_process(philo_process[ph_id]);
         ph_id--;
+
+        //print_f("Delete:\nID:%d PhiloProcess: %d\n",ph_id,philo_process[ph_id]);
+
+
+        sys_kill_process(philo_process[ph_id]);
+
+        // print_f("ID: ");
+        // for(int i=0;i<MAXPHILO;i++){
+        //     print_f("%d, ",philo_process[i]);
+        // }
+        // print_f("\n");
+
+        // sys_print_all_procceses();
+        // print_f("\n");
 }
 
 void test(int id) { 
@@ -56,10 +75,10 @@ void test(int id) {
         forkState[id]=id;
         
   
-        sys_sleep(5); 
-        print_ph_state();
+        sys_sleep(50); 
+       print_ph_state();
   
-        // sem_post(&S[phnum]) has no effect during takefork 
+        // sem_post(semaphores[id]) has no effect during takefork 
         // used to wake up hungry philosophers during putfork 
         sys_sem_post(semaphores[id]); 
     } 
@@ -83,7 +102,7 @@ void take_fork(int id)
     // if unable to eat wait to be signalled 
     sys_sem_wait(semaphores[id]); 
   
-    sys_sleep(5); 
+    sys_sleep(50); 
 } 
 
 void put_fork(int id) 
@@ -167,11 +186,14 @@ void philosophers() {
 
     while(running){
         
-        c=get_char();
+        c=get_key();
         switch (c){
             case 'c':
                 if(ph_count<MAXPHILO){
                     create_philosopher();
+                                    // sys_print_all_procceses();
+                                    // print_f("\n");
+
 
                 }
                 break;
@@ -184,6 +206,7 @@ void philosophers() {
                 break;
             case 'q':
                 running=0;
+                print_f("QUIT\n");
                 while (ph_count>0){
                     delete_philosopher();
                 }
