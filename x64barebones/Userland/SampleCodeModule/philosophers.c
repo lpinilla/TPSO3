@@ -26,7 +26,6 @@ void create_philosopher(){
         ph_id++;
 	    philo_process[ph_id]=sys_create_args_process(philosopher,philo_name,BACKGROUND,1,(void**)arg);
     }
-	//exit?
 }
 
 void philosopher(int argc,argumentsPointer arg) {
@@ -42,7 +41,8 @@ void philosopher(int argc,argumentsPointer arg) {
 void delete_philosopher(){
 		sys_sem_close(semaphores[ph_count-1]);
 	    ph_count--;
-        sys_kill_process(philo_process[--ph_id]);
+        sys_kill_process(philo_process[ph_id]);
+        ph_id--;
 }
 
 void test(int id) { 
@@ -57,7 +57,6 @@ void test(int id) {
         
   
         sys_sleep(5); 
-  
         print_ph_state();
   
         // sem_post(&S[phnum]) has no effect during takefork 
@@ -73,6 +72,7 @@ void take_fork(int id)
 
     // state that hungry 
     state[id] = HUNGRY;  
+
     print_ph_state();
 
     // eat if neighbours are not eating 
@@ -96,6 +96,8 @@ void put_fork(int id)
     forkState[id]=MAXPHILO;
     
     print_ph_state();
+           
+
     test(left(id));
     test(right(id));
     sys_unlock(&ph_mutex);
@@ -104,7 +106,9 @@ void put_fork(int id)
 
 
 void print_ph_state() {
+   
 	for(int i = 0; i < ph_count; i++) {
+
 		print_f("\nPhilosopher %d: ",i);
         if( state[i]==THINKING){
             print_f("THINKING\n");
@@ -127,7 +131,7 @@ void print_ph_state() {
             print_f("Right Owner %d\n\n",forkState[i]);
         }
 	}
-    print_f("----------------------------\n");
+    print_f("----------------------------\n");   
 
 
 }
@@ -151,12 +155,15 @@ void philosophers() {
     for(int i=0;i<MAXPHILO;i++){
         forkState[i]=MAXPHILO;
     }
-        sys_clear_console();
+    sys_clear_console();
 
     
 	print_f("Press 'c' to create a new philosopher.\n");
     print_f("Press 'd' to delete one philosopher.\n");
     print_f("Press 'q' to quit dining philosophers\n");
+   
+
+
 
     while(running){
         
@@ -171,7 +178,7 @@ void philosophers() {
 
             case 'd':
                 if(ph_count>0){
-                    sys_create_process(delete_philosopher,"Delete Philo",BACKGROUND);
+                    delete_philosopher();
 
                 }
                 break;
@@ -180,7 +187,6 @@ void philosophers() {
                 while (ph_count>0){
                     delete_philosopher();
                 }
-                sys_sem_close(semaphores[ph_count-1]);  
                 sys_print_all_procceses();
                 break;
         }
