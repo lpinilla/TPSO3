@@ -20,7 +20,7 @@ void create_philosopher(){
     }
     else{
         philo_name[12]=(char)(ph_id + '0');
-	    semaphores[ph_count] = sys_sem_open((void*) (long) ph_id);
+	    semaphores[ph_count] = sys_sem_open(philo_name);
 	    state[ph_id] = THINKING;
         ph_count++;
         arg->ph_id=ph_id;
@@ -32,10 +32,12 @@ void create_philosopher(){
         //     print_f("%d, ",philo_process[i]);
         // }
         // print_f("\n");
+        //sys_my_free(arg);
     }
 }
 
 void philosopher(int argc,argumentsPointer arg) {
+    void (*eat) (int) = take_fork;
     while(1){
         sys_sleep(30); 
         take_fork(arg->ph_id); 
@@ -108,7 +110,7 @@ void take_fork(int id)
 
 void put_fork(int id) 
 { 
-   sys_lock(&ph_mutex); 
+   sys_lock(&ph_mutex);
   
     // state that thinking 
     state[id] = THINKING; 
@@ -126,14 +128,17 @@ void put_fork(int id)
 
 
 void print_ph_state() {
-   
+    int aux = 0, aux2 = 0;
 	for(int i = 0; i < ph_count; i++) {
 
 		print_f("\nPhilosopher %d: ",i);
-        if( state[i]==THINKING){
+        //sys_lock(&ph_mutex);
+        aux = state[i];
+        //sys_unlock(&ph_mutex);
+        if( aux==THINKING){
             print_f("THINKING\n");
         }
-        else if(state[i]==HUNGRY){
+        else if(aux==HUNGRY){
             print_f("HUNGRY\n");
         }
         else{
@@ -165,7 +170,7 @@ int right(int id){
 
 void philosophers() {
     //Setup
-	ph_count = 2; //para testear ui
+	ph_count = 0; //para testear ui
 	ph_id = 0; 
     ph_mutex=0;
     int running=1;
@@ -216,7 +221,14 @@ void philosophers() {
         }
         
     }
+}
 
-	
+int min(int a, int b) { //hacer inline
+    if (a > b) return b;
+    return a;
+}
 
+int max(int a, int b){
+    if(a > b) return a;
+    return b;
 }

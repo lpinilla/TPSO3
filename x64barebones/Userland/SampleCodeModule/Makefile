@@ -17,6 +17,7 @@ all: $(MODULE)
 
 $(MODULE): $(OBJECTS) $(OBJECTS_ASM)
 	$(LD) -T sampleCodeModule.ld _loader.o $(OBJECTS) $(OBJECTS_ASM) -o ../$(MODULE)
+	$(LD) -T sampleCodeModule.ld _loader.o $(OBJECTS) $(OBJECTS_ASM) --oformat=elf64-x86-64 -o ../sampleCodeModule.elf
 
 
 clean:

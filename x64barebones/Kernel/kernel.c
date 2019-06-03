@@ -55,7 +55,7 @@ void * initializeKernelBinary(){
 	clearBSS(&bss, &endOfKernel - &bss);
 
 
-	initialize_list(memory_location, (1<<28)); // 32Mb
+	initialize_list(memory_location, (1<<24)); // 32Mb
 	init_graphics();
 	init_scheduler();
 	init_semaphores();

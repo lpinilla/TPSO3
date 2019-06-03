@@ -67,6 +67,8 @@ size_t look_for_space_of_size(int index, size_t size);
 
 int pages_used_by_heap();
 
+void no_memory_error();
+
 
 
 #endif
