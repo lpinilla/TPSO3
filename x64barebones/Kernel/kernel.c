@@ -12,6 +12,7 @@
 #include <semaphore.h>
 #include <interrupts.h>
 #include <ipc.h>
+#include <files.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -60,6 +61,7 @@ void * initializeKernelBinary(){
 	init_semaphores();
 	init_processes();
 	init_mailbox();
+	init_tables();
 	
 	load_idt();
 

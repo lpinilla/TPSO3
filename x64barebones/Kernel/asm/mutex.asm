@@ -10,7 +10,7 @@ _mutex_lock:
 
     xchg rax, [rdi]
 
-    test rax, rax
+    test rax, 0
 
     jz ok
 

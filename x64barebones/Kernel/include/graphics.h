@@ -49,10 +49,12 @@ void shadow_pixel(int x,int y, int r, int g, int b);
 //escribir
 void draw_char_w_front_and_back_color(int x, int y, char c, int foreground_color, int background_color);
 void draw_free_char(char c, int foreground_color, int background_color);
+void draw_free_char_at(int x, int y, char c, int foreground_color, int background_color);
 void draw_free_string(char * string, int foreground_color, int background_color);
 void draw_color_char(char c, int foreground_color);
 void draw_char(char c);
 void draw_string(char * string);
+void draw_string_at(int x, int y, char * string);
 void draw_n_chars(char * string, int size);
 void erase_character(void);
 int number_of_digits(int n);
@@ -61,6 +63,7 @@ void erase_character(void);
 void draw_n_chars_color(char * s, int index, int foreground_color, int background_color);
 void draw_err_number(int n);
 void draw_err_string(char * string);
+void draw_err_char(char c);
 
 //aux
 void init_graphics(void);
@@ -74,6 +77,7 @@ int get_x_res(void);
 int get_y_res(void);
 void clear_shadow_buffer(void);
 void reset_cursor(void);
+void reset_x_cursor(void);
 
 
 #endif

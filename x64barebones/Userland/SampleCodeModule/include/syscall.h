@@ -8,6 +8,7 @@
 typedef enum {P_READY, P_RUNNING, P_WAITING, P_TERMINATE} pstate_t;
 typedef enum {BACKGROUND, FOREGROUND} pground_t;
 typedef enum {PRIORITY_1=1, PRIORITY_2, PRIORITY_3, PRIORITY_4} ppriority_t;
+typedef enum {STDIN=0, STDOUT, STDERR, R_ONLY, W_ONLY} fd_t;
 
 void sys_write(char * string, int size);
 char sys_read(char * string, int size);
@@ -41,6 +42,14 @@ void sys_print_mem_list();
 void sys_ipc_read(int id, char * msg_ret);
 void sys_ipc_write(char * msg, int id);
 int sys_create_priority_process(void * function, char * name, pground_t process_ground, ppriority_t priority);
+int sys_open_fd(char * path, fd_t type);
+int sys_close_fd(int fd);
+int sys_create_n_pipe(char * path);
+int sys_delete_file(char * path);
+void sys_read_fd(int fd, char * buff, int q);
+void sys_write_fd(int fd, char * buff, int q);
 int sys_create_args_process(void * function, char * name, pground_t process_ground, int argc, void ** argv);
+void sys_draw_string_at(int x, int y, char * string);
+void sys_reset_x_cursor();
 
 #endif

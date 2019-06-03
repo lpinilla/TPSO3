@@ -25,6 +25,10 @@ void reset_cursor(){
   y_cursor = CHAR_HEIGHT;
 }
 
+void reset_x_cursor(){
+  x_cursor = 0;
+}
+
 
 //-----------------------------------------------------------------ESCRITURA
 
@@ -61,6 +65,10 @@ void draw_free_char(char c, int foreground_color, int background_color){
   draw_char_w_front_and_back_color(x_cursor, y_cursor, c, foreground_color, background_color);
 }
 
+void draw_free_char_at(int x, int y, char c, int foreground_color, int background_color){
+  draw_char_w_front_and_back_color(x, y, c, foreground_color, background_color);
+}
+
 //vos le especificas los colores de frente y de fondo
 void draw_free_string(char * string, int foreground_color, int background_color){
   int i = 0;
@@ -81,6 +89,13 @@ void draw_char(char c){
 
 void draw_string(char * string){
   draw_free_string(string, 0xFFFFFF, 0x0);
+}
+
+void draw_string_at(int x, int y, char * string){
+  int i = 0, aux = x;
+  while(*(string + i)){
+    draw_free_char_at(aux,y, string[i++], 0xFFFFFF, 0x0);
+  }
 }
 void draw_n_chars(char * s, int index){
   for(int i = 0 ; i< index; i++){
@@ -149,6 +164,10 @@ void draw_err_number(int n){
 }
 void draw_err_string(char * string){
   draw_free_string(string,ERR_FG_COLOR, ERR_BG_COLOR);
+}
+
+void draw_err_char(char c){
+  draw_free_char(c, ERR_FG_COLOR, ERR_BG_COLOR);
 }
 
 void new_line(){

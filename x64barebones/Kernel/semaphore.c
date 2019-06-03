@@ -1,5 +1,6 @@
 #include "include/semaphore.h"
-#include "include/graphics.h"
+#include <graphics.h>
+#include <queue.h>
 
 typedef struct nodeADT *node_t;
 
