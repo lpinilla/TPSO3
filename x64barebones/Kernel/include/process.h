@@ -39,5 +39,6 @@ int open_fd(char * path, fd_t type);
 int close_fd(int fd_pos);
 // writes in the fd of current process
 void write_fd(int fd, const char * buff, int q);
-
+// writes q chars in buff from the fd
+void read_fd(int fd, char * buff, int q);
 #endif

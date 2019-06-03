@@ -285,3 +285,17 @@ void write_fd(int fd, const char * buff, int q){
 			break;
 	}
 }
+
+void read_fd(int fd, char * buff, int q){
+	process_t current = get_current_process();
+	switch(current->fds[fd]->type){
+		case STD_IN:
+			for(int i=0; i<q; i++){
+				*buff=get_char();
+			}
+			break;
+		case R_ONLY:
+			read_file(current->fds[fd]->file, buff, q);
+			break;
+	}
+}
