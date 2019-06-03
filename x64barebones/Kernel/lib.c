@@ -71,12 +71,12 @@ int str_cmp(char * s1, char * s2){
 	if((s1 != NULL && s2 == NULL) ||
 		(s1 == NULL && s2 != NULL)) return -1;
 	int i;
-
-  for (i = 0; s1[i] == s2[i]; i++){
-	  if (s1[i] == '\0'){
-      return 0;
+	if(s1==NULL || s2==NULL)
+		return 1;
+  	for (i = 0; s1[i] == s2[i]; i++){
+	  	if (s1[i] == '\0'){
+      		return 0;
 		}
 	}
-	
 	return s1[i] - s2[i];
 }

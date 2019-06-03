@@ -1,7 +1,22 @@
 #ifndef _SCHEDULER_H
 #define _SCHEDULER_H
 
-#include "./process.h"
+#include <process.h>
+#include <mem_manager.h>
+#include <graphics.h>
+#include <interrupts.h>
+#include <queue.h>
+#include <time.h>
+
+#define HIGH 0
+#define MEDIUM 1
+#define LOW 2
+
+#define PRIORITIES 3
+
+#define FALSE 0
+#define TRUE 1
+
 
 #define HIGH 0
 #define MEDIUM 1

@@ -13,6 +13,7 @@
 #include <mutex.h>
 #include <semaphore.h>
 #include <ipc.h>
+#include <files.h>
 
 #define READ 3
 #define WRITE 4
@@ -51,7 +52,13 @@
 #define IPC_WRITE 37
 #define NEW_PROCESS_PRIORITY 38
 #define NICE 39
-#define NEW_PROCESS_ARGS 40
+#define OPEN_FD 40
+#define CLOSE_FD 41
+#define CREATE_N_PIPE 42
+#define DELETE_FILE 43
+#define READ_FD 44
+#define WRITE_FD 45
+#define NEW_PROCESS_ARGS 46
 
 //si pongo #include <mem_manager.h> se rompe
 void * mem_alloc(size_t size);

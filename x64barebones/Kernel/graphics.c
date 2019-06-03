@@ -150,6 +150,10 @@ void draw_err_string(char * string){
   draw_free_string(string,ERR_FG_COLOR, ERR_BG_COLOR);
 }
 
+void draw_err_char(char c){
+  draw_free_char(c, ERR_FG_COLOR, ERR_BG_COLOR);
+}
+
 void new_line(){
   if(y_cursor != (get_y_res()-CHAR_HEIGHT)){ //tal vez esto es lo que escribe abajo de la pantalla
     y_cursor += CHAR_HEIGHT;

@@ -20,6 +20,7 @@ DEFINE Y DESPUES EN EL VECTOR DE STRINGS ENE EL NUMERO DEL DEFINE -1 (podriamos 
 #include <mem_manager_test.h>
 #include <ipc_test.h>
 #include <prodcons.h>
+#include <n_pipes_test.h>
 #include <process_args_test.h>
 #include <philosophers.h>
 
@@ -36,9 +37,9 @@ DEFINE Y DESPUES EN EL VECTOR DE STRINGS ENE EL NUMERO DEL DEFINE -1 (podriamos 
 #define PRINT_F 8
 #define INVALID 9
 
-#define COMMANDS 18
+#define COMMANDS 23
 
-#define MAX_LENGTH 20
+#define MAX_LENGTH 30
 
 typedef void (*func)();
 
@@ -62,6 +63,7 @@ void try_alloc();
 void try_ipc();
 void run_prodcons();
 void ps();
+void try_pipe();
 void run_philo();
 void try_process_args();
 uint64_t * shell();
