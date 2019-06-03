@@ -4,7 +4,6 @@
 #include <stddef.h>
 #include "../include/lib.h"
 #include "graphics.h"
-#include "./syscall_dispacher.h"
 
 //#define PAGE_SIZE 4096 //4KB
 #define PAGE_SIZE 1024
@@ -67,6 +66,8 @@ void put_space_in_list(int index, size_t size);
 size_t look_for_space_of_size(int index, size_t size);
 
 int pages_used_by_heap();
+
+void no_memory_error();
 
 
 

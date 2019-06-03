@@ -5,6 +5,7 @@
 size_t * free_lists[N_OF_LISTS]; //hasta 20 listas
 size_t max_partition_size, total_mem_size;
 int n_of_lists;
+int data_in_list[N_OF_LISTS];
 
 void powers_in_between_test();
 void powers_in_between_test2();

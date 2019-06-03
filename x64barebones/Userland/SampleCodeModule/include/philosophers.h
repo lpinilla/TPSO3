@@ -27,6 +27,8 @@ void print_ph_state();
 void philosophers();
 int left();
 int right();
+int max(int a, int b);
+int min(int a, int b);
 
 extern int state[MAXPHILO]; 
 extern int forkState[MAXPHILO];

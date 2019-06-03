@@ -153,8 +153,3 @@ size_t new_process_args(uint64_t process_start, char * process_name, int foregro
   run_process(new_process);
   return get_pid(new_process);
 }
-
-void no_memory_error(){
-  clear_screen();
-  draw_err_string("No memory available");
-}

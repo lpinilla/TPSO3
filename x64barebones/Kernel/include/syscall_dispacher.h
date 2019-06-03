@@ -64,6 +64,5 @@ void write(int param1, char * param2, int param3);
 void color_write(char * pointer, int size, int foreground_color, int background_color);
 size_t new_process(uint64_t process_start, char * process_name, int foreground, int priority);
 size_t new_process_args(uint64_t process_start, char * process_name, int foreground, int priority, int argc, void ** argv);
-void no_memory_error();
 
 #endif

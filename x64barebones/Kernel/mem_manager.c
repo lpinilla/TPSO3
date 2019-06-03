@@ -2,12 +2,14 @@
 #include "./include/mem_manager.h"
 static void * start_dir;
 size_t * free_lists[N_OF_LISTS]; //hasta 20 listas
+int data_in_list[N_OF_LISTS];
 size_t max_partition_size, total_mem_size;
 int n_of_lists;
 
 void initialize_list(void * start_ptr, size_t total_size){
     start_dir = start_ptr;
     total_mem_size = total_size;
+    memset(data_in_list, 0, N_OF_LISTS * sizeof(int));
     if(total_mem_size <= (2 *PAGE_SIZE) || !IS_POWER_OF_2(total_mem_size)){
         total_mem_size = fix_size(total_mem_size);
     }
@@ -37,7 +39,8 @@ void * mem_alloc(size_t size){
         *((size_t *) ((char *) memory_base() + free_space_offset)) = aux;
         return (void *) ((char *) memory_base() + free_space_offset + sizeof(size_t));
     }//no encontramos hueco
-    if(split_upper_level(aux<<1, 0) == -1) no_memory_error(); //return NULL; //no hay memoria disponible
+    if(split_upper_level(aux<<1, 0) == -1) return NULL; //no hay memoria disponible
+    //if(split_upper_level(aux<<1, 0) == -1) no_memory_error(); //no hay memoria disponible
     return mem_alloc(size); //se dividió, intentamos de nuevo el pedido
 }
 
@@ -50,6 +53,7 @@ int split_upper_level(size_t desired, int levels){
         return split_upper_level(desired<<1, levels+1);
     }
     //encontramos un espacio de memoria que podemos dividir
+    data_in_list[index_in_list+1] += 2;
     free_lists[index_in_list+1][0] = desired_val;
     free_lists[index_in_list+1][1] = desired_val + (desired_val>>1);
     recursive_divide(index_in_list+1, levels);
@@ -60,6 +64,7 @@ int split_upper_level(size_t desired, int levels){
 void recursive_divide(int index_in_list, int levels){
     if(levels == 0) return;
     int aux = free_lists[index_in_list][0];
+    data_in_list[index_in_list]--;
     put_space_in_list(index_in_list+1,aux);
     put_space_in_list(index_in_list+1, aux + (PAGE_SIZE<<(n_of_lists-index_in_list-2)));
     free_lists[index_in_list][0] = 0;
@@ -68,10 +73,12 @@ void recursive_divide(int index_in_list, int levels){
 
 size_t look_for_space_in_list(int index){
     size_t ret = 0;
+    if(data_in_list[index] <= 0) return -1;
     for(int i = 0; i < (1<<index); i++){
         if(free_lists[index][i] != 0){
             ret = free_lists[index][i];
             free_lists[index][i] = 0;
+            data_in_list[index]--;
             return ret;
         }
     }
@@ -80,10 +87,12 @@ size_t look_for_space_in_list(int index){
 
 size_t look_for_space_of_size(int index, size_t size){ //ver de mergear con la función de arriba
     size_t ret = 0;
+    if(data_in_list[index] <= 0) return -1;
     for(int i = 0; i < (1<<index); i++){
         if(free_lists[index][i] == size){
             ret = free_lists[index][i];
             free_lists[index][i] = 0;
+            data_in_list[index]--;
             return ret;
         }
     }
@@ -124,6 +133,7 @@ void free_mem(void * ptr){
 }
 
 void put_space_in_list(int index, size_t size){
+    data_in_list[index]++;
     for(int i = 0; i < (1<<index); i++){
         if(free_lists[index][i] == 0){
             free_lists[index][i] = size;
@@ -175,6 +185,7 @@ void load_free_lists(void * mem, int index, int n_of_lists){
 void populate_free_list(int initial_value, int index, int steps){
     if(!steps) return;
     *free_lists[index] = initial_value;
+    data_in_list[index]++;
     for(int i = 1; i < (1<<index); i++){
         free_lists[index][i] = 0;
     }
@@ -188,4 +199,9 @@ size_t fix_size(size_t size){
     size |= size >> 8;
     size |= size >> 16;
     return size+1;
+}
+
+void no_memory_error(){
+  /*clear_screen();
+  draw_err_string("No memory available");*/
 }
