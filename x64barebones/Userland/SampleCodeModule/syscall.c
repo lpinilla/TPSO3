@@ -43,6 +43,7 @@
 #define DELETE_FILE 43
 #define READ_FD 44
 #define WRITE_FD 45
+#define NEW_PROCESS_ARGS 46
 
 void sys_read_fd(int fd, char * buff, int q){
 	_call_int_80((uint64_t)READ_FD, (uint64_t) fd, (uint64_t) buff, (uint64_t) q, 0, 0);
@@ -197,4 +198,7 @@ int sys_create_n_pipe(char * path){
 
 int sys_delete_file(char * path){
 	return (int)_call_int_80(DELETE_FILE, (uint64_t) path, 0, 0, 0 , 0);
+}
+int sys_create_args_process(void * function, char * name, pground_t process_ground, int argc, void ** argv){
+	return (int)_call_int_80(NEW_PROCESS_ARGS, (uint64_t)function, (uint64_t) name, (uint64_t)process_ground, (uint64_t)argc, (uint64_t)argv);
 }

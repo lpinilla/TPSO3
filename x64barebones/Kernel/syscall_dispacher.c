@@ -57,7 +57,7 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         free_mem((void*) rsi);
         break;
       case MEM_BASE:
-        return (uint64_t) return_memory_base();
+        return (uint64_t) memory_base();
       case NEW_PROCESS:
         return new_process(rsi, (char *)rdx, (int)rcx, 1);
       case KILL_PROCESS:
@@ -119,6 +119,10 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         break;
       case WRITE_FD:
         write_fd((int)rsi, (char *)rdx, (int)rcx);
+        break;
+      case NEW_PROCESS_ARGS:
+        return (uint64_t)new_process_args(rsi, (char *)rdx, (int)rcx, 1, (int)r8, (void **)r9);
+        break;
   }
 	return 0;
 }
@@ -152,6 +156,15 @@ void write(int fd, char * pointer, int size) {
 
 size_t new_process(uint64_t process_start, char * process_name, int foreground, int priority){
   process_t new_process = create_process(process_start, process_name, priority);
+  if(foreground == 1){
+    set_foreground_process(get_pid(new_process));
+  }
+  run_process(new_process);
+  return get_pid(new_process);
+}
+
+size_t new_process_args(uint64_t process_start, char * process_name, int foreground, int priority, int argc, void ** argv){
+  process_t new_process = create_process_args(process_start, process_name, argc, argv, priority);
   if(foreground == 1){
     set_foreground_process(get_pid(new_process));
   }

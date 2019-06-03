@@ -58,6 +58,7 @@
 #define DELETE_FILE 43
 #define READ_FD 44
 #define WRITE_FD 45
+#define NEW_PROCESS_ARGS 46
 
 //si pongo #include <mem_manager.h> se rompe
 void * mem_alloc(size_t size);
@@ -68,5 +69,6 @@ int read(int param1, char * param2, int param3);
 void write(int param1, char * param2, int param3);
 void color_write(char * pointer, int size, int foreground_color, int background_color);
 size_t new_process(uint64_t process_start, char * process_name, int foreground, int priority);
+size_t new_process_args(uint64_t process_start, char * process_name, int foreground, int priority, int argc, void ** argv);
 
 #endif

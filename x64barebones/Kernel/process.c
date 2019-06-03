@@ -54,6 +54,8 @@ typedef struct {
 
 static uint64_t init_stack(process_t process, uint64_t process_start, uint64_t stack_pointer); 
 static void process_caller(process_t process, uint64_t process_start);
+static uint64_t init_stack_args(process_t process, uint64_t process_start, uint64_t stack_pointer, int argc, void ** argv); 
+static void process_caller_args(process_t process, uint64_t process_start, int argc, void ** argv);
 
 static size_t global_pid;
 static process_t all_processes[MAX_PROCESSES];
@@ -77,6 +79,28 @@ process_t create_process(uint64_t process_start, char * process_name, int priori
     new_process->stack_pointer = init_stack(new_process, process_start, new_process->stack_start);
 	new_process->priority = priority;
 	init_fds(new_process);
+	if(global_pid != 0){
+		new_process->ppid = get_current_process()->pid;
+	}
+	else{
+		foreground_process = new_process;
+		new_process->ppid = 0;
+	}
+
+	all_processes[global_pid++] = new_process;
+
+    return new_process;
+}
+
+process_t create_process_args(uint64_t process_start, char * process_name, int argc, void ** argv, int priority){
+
+    process_t new_process = (process_t)mem_alloc(sizeof(*new_process));
+	str_cpy(process_name, (char*)(new_process->name));
+    new_process->pid = global_pid;
+    new_process->state = P_READY;
+	new_process->stack_start = (uint64_t)mem_alloc(STACK_SIZE);
+    new_process->stack_pointer = init_stack_args(new_process, process_start, new_process->stack_start, argc, argv);
+	new_process->priority = priority;
 	if(global_pid != 0){
 		new_process->ppid = get_current_process()->pid;
 	}
@@ -169,6 +193,37 @@ static uint64_t init_stack(process_t process, uint64_t process_start, uint64_t s
 	return (uint64_t)frame;
 }
 
+static uint64_t init_stack_args(process_t process, uint64_t process_start, uint64_t stack_pointer, int argc, void ** argv) {
+    stack_t * frame = (stack_t *)(stack_pointer + STACK_SIZE - sizeof(stack_t) - 1);
+
+	frame->gs = 0x000;
+	frame->fs =	0x000;
+	frame->r15 = 0x000;
+	frame->r14 = 0x000;
+	frame->r13 = 0x000;
+	frame->r12 = 0x000;
+	frame->r11 = 0x000;
+	frame->r10 = 0x000;
+	frame->r9 =	0x000;
+	frame->r8 =	0x000;
+	frame->rsi = process_start;
+	frame->rdi = (uint64_t)process;
+	frame->rbp = 0x000;
+	frame->rdx = (uint64_t)argc;
+	frame->rcx = (uint64_t)argv;
+	frame->rbx = 0x000;
+	frame->rax = 0x000;
+
+	frame->rip = (uint64_t)process_caller_args;
+	frame->cs =	0x008;
+	frame->eflags = 0x202;
+	frame->rsp = (uint64_t)&(frame->base);
+	frame->ss = 0x000;
+	frame->base = 0x000;
+
+	return (uint64_t)frame;
+}
+
 void print_process(process_t process){
 	draw_string("PID: ");
 	draw_number(process->pid);
@@ -206,6 +261,15 @@ void print_process(process_t process){
 static void process_caller(process_t process, uint64_t process_start){
 	void (*process_call)(void) = (void (*)(void))process_start;
 	(*process_call)();
+	if(foreground_process == process){
+		set_foreground_process(process->ppid);
+	}
+	kill_current_process();
+}
+
+static void process_caller_args(process_t process, uint64_t process_start, int argc, void ** argv){
+	void (*process_call)(int , void **) = (void (*)(int , void **))process_start;
+	(*process_call)(argc, argv);
 	if(foreground_process == process){
 		set_foreground_process(process->ppid);
 	}
