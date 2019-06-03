@@ -181,7 +181,7 @@ void sys_ipc_write(char * msg, int id){
 }
 
 int sys_create_priority_process(void * function, char * name, pground_t process_ground, ppriority_t priority){
-	return (int)_call_int_80(NEW_PROCESS, (uint64_t)function, (uint64_t) name, (uint64_t)process_ground, (uint64_t)priority, 0);
+	return (int)_call_int_80(NEW_PROCESS_PRIORITY, (uint64_t)function, (uint64_t) name, (uint64_t)process_ground, (uint64_t)priority, 0);
 }
 
 int sys_open_fd(char * path, fd_t type){

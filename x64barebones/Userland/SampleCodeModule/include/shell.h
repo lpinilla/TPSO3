@@ -22,6 +22,7 @@ DEFINE Y DESPUES EN EL VECTOR DE STRINGS ENE EL NUMERO DEL DEFINE -1 (podriamos 
 #include <prodcons.h>
 #include <n_pipes_test.h>
 #include <process_args_test.h>
+#include <priority_test.h>
 #include <philosophers.h>
 
 #define RETURN_ADRESS 0xDEADC0DE
@@ -37,7 +38,7 @@ DEFINE Y DESPUES EN EL VECTOR DE STRINGS ENE EL NUMERO DEL DEFINE -1 (podriamos 
 #define PRINT_F 8
 #define INVALID 9
 
-#define COMMANDS 24
+#define COMMANDS 25
 
 #define MAX_LENGTH 30
 
@@ -62,6 +63,7 @@ void try_semaphore();
 void try_alloc();
 void try_ipc();
 void try_pipes();
+void try_priorities();
 void run_prodcons();
 void ps();
 void try_pipe();
