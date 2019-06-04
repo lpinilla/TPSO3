@@ -214,5 +214,7 @@ process_t get_current_process(){
 }
 
 void set_current_process_priority(int priority){
-    set_priority(get_pid(scheduler->current_process), priority);
+    if(priority <= 2){
+        set_priority(get_pid(scheduler->current_process), priority);
+    }
 }

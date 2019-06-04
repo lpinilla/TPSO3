@@ -59,7 +59,7 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
       case MEM_BASE:
         return (uint64_t) memory_base();
       case NEW_PROCESS:
-        return new_process(rsi, (char *)rdx, (int)rcx, 1);
+        return new_process(rsi, (char *)rdx, (int)rcx, 2);
       case KILL_PROCESS:
         set_state_id((size_t)rsi, P_TERMINATE);
         break;
@@ -120,7 +120,7 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         write_fd((int)rsi, (char *)rdx, (int)rcx);
         break;
       case NEW_PROCESS_ARGS:
-        return (uint64_t)new_process_args(rsi, (char *)rdx, (int)rcx, 1, (int)r8, (void **)r9);
+        return (uint64_t)new_process_args(rsi, (char *)rdx, (int)rcx, 2, (int)r8, (void **)r9);
         break;
       case RESET_X_CURSOR:
         reset_x_cursor();

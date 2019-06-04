@@ -185,6 +185,10 @@ int sys_create_priority_process(void * function, char * name, pground_t process_
 	return (int)_call_int_80(NEW_PROCESS_PRIORITY, (uint64_t)function, (uint64_t) name, (uint64_t)process_ground, (uint64_t)priority, 0);
 }
 
+void sys_nice(ppriority_t priority){
+	_call_int_80(NICE, (uint64_t)priority, 0, 0, 0, 0);
+}
+
 int sys_open_fd(char * path, fd_t type){
 	return (int)_call_int_80(OPEN_FD, (uint64_t) path, (uint64_t) type, 0, 0, 0);
 }

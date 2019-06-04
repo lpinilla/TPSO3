@@ -256,7 +256,15 @@ void print_process(void * p){
 		draw_string(" PROCESS IN: BACKGROUND");
 	}
 	draw_string(" PRIORITY: ");
-	draw_number(process->priority);
+	if(process->priority == 0){
+		draw_number(3);
+	}
+	else if(process->priority == 1){
+		draw_number(2);
+	}
+	else if(process->priority == 2){
+		draw_number(1);
+	}
 
 	new_line();
 }
