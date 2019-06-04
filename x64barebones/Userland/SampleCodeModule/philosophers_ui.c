@@ -26,8 +26,14 @@ void draw_lower_side(int x, int y, int start_index);
 
 
 void print_ui(){
+    print_f("Press 'c' to create a new philosopher.\n");
+    print_f("Press 'd' to delete one philosopher.\n");
+    print_f("Press 'q' to quit dining philosophers\n");
     print_f("Number of philosophers: %d \n",ph_count);
-
+    while(1){
+        sys_sleep(3);
+        print_f("%d", ph_count);
+        //print_ph_state();
     //la mesa
     draw_table();
 
@@ -40,6 +46,7 @@ void print_ui(){
     //borde inferior
     draw_lower_side(TABLE_X + TABLE_WIDTH * 1.7f ,TABLE_Y + TABLE_HEIGHT + SPACE_PHILO_TABLE / 2, (2 * (MAXPHILO / 4)));
 
+    }
     //borde izquierdo
 }
 
@@ -51,7 +58,7 @@ void draw_table(){
 void draw_upper_side(int x, int y, int start_index){
     t_color aux;
     for(int i = 0; i < MAXPHILO / 4; i++){
-                                                        //if( (i + start_index) >= ph_count) break;
+    if( (i + start_index) >= ph_count) break;
         switch(state[i]){
             case THINKING:
                 aux = colors[1];
@@ -69,7 +76,7 @@ void draw_upper_side(int x, int y, int start_index){
 void draw_lower_side(int x, int y, int start_index){
     t_color aux;
     for(int i = 0; i < MAXPHILO / 4; i++){
-                                                        //if( (i + start_index) >= ph_count) break;
+    if( (i + start_index) >= ph_count) break;
         switch(state[i]){
             case THINKING:
                 aux = colors[1];

@@ -11,6 +11,7 @@
 #include "./syscall.h"
 #include "./utilities.h"
 #include <openlg.h>
+#include <philo_ui.h>
 
 typedef struct arguments{
 	int ph_id;

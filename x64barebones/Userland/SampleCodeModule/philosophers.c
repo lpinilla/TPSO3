@@ -1,11 +1,10 @@
 #include <philosophers.h>
-#include <philo_ui.h>
 
 int state[MAXPHILO]; 
 int forkState[MAXPHILO];
 int semaphores[MAXPHILO];
 static int philo_process[MAXPHILO];
-int ph_count;
+ int ph_count;
 static int ph_id;
 static int ph_mutex;
 char c;
@@ -14,34 +13,31 @@ static char * philo_name="Philosopher N";
 
 
 void create_philosopher(){
-    argumentsPointer arg=sys_my_malloc(sizeof(arguments));
+    argumentsPointer arg = sys_my_malloc(sizeof(arguments));
     if(arg==NULL){
         print_f("Malloc Error, cant create more philosophers\n");
     }
     else{
         philo_name[12]=(char)(ph_id + '0');
-	    semaphores[ph_count] = sys_sem_open(philo_name);
+	    semaphores[ph_count] = sys_sem_open((void*) (long) ph_id);
 	    state[ph_id] = THINKING;
         ph_count++;
         arg->ph_id=ph_id;
 	    philo_process[ph_id]=sys_create_args_process(philosopher,philo_name,BACKGROUND,1,(void**)arg);
         ph_id++;
-
         // print_f("ID: ");
         // for(int i=0;i<MAXPHILO;i++){
         //     print_f("%d, ",philo_process[i]);
         // }
         // print_f("\n");
-        //sys_my_free(arg);
     }
 }
 
 void philosopher(int argc,argumentsPointer arg) {
-    void (*eat) (int) = take_fork;
     while(1){
-        sys_sleep(30); 
+        sys_sleep(5); 
         take_fork(arg->ph_id); 
-        sys_sleep(30); 
+        sys_sleep(5); 
         put_fork(arg->ph_id); 
     }
     
@@ -78,10 +74,10 @@ void test(int id) {
         forkState[id]=id;
         
   
-        sys_sleep(50); 
-       print_ph_state();
+        sys_sleep(5); 
+        print_ph_state();
   
-        // sem_post(semaphores[id]) has no effect during takefork 
+        //sem_post(semaphores[id]) has no effect during takefork 
         // used to wake up hungry philosophers during putfork 
         sys_sem_post(semaphores[id]); 
     } 
@@ -105,12 +101,12 @@ void take_fork(int id)
     // if unable to eat wait to be signalled 
     sys_sem_wait(semaphores[id]); 
   
-    sys_sleep(50); 
+    sys_sleep(5); 
 } 
 
 void put_fork(int id) 
 { 
-   sys_lock(&ph_mutex);
+   sys_lock(&ph_mutex); 
   
     // state that thinking 
     state[id] = THINKING; 
@@ -128,17 +124,14 @@ void put_fork(int id)
 
 
 void print_ph_state() {
-    int aux = 0, aux2 = 0;
+   
 	for(int i = 0; i < ph_count; i++) {
 
 		print_f("\nPhilosopher %d: ",i);
-        //sys_lock(&ph_mutex);
-        aux = state[i];
-        //sys_unlock(&ph_mutex);
-        if( aux==THINKING){
+        if( state[i]==THINKING){
             print_f("THINKING\n");
         }
-        else if(aux==HUNGRY){
+        else if(state[i]==HUNGRY){
             print_f("HUNGRY\n");
         }
         else{
@@ -170,7 +163,7 @@ int right(int id){
 
 void philosophers() {
     //Setup
-	ph_count = 0; //para testear ui
+	ph_count = 0;
 	ph_id = 0; 
     ph_mutex=0;
     int running=1;
@@ -182,16 +175,22 @@ void philosophers() {
     }
     sys_clear_console();
 
-    //print_ui();
+    
 	print_f("Press 'c' to create a new philosopher.\n");
     print_f("Press 'd' to delete one philosopher.\n");
     print_f("Press 'q' to quit dining philosophers\n");
-   
+    //sys_create_process(print_ui, "uicomensales", FOREGROUND);
 
-
+    create_philosopher();
+    sys_sleep(3);
+    create_philosopher();
+    sys_sleep(3);
+    create_philosopher();
+    sys_sleep(3);
+    create_philosopher();
+    sys_sleep(3);
 
     while(running){
-        
         c=get_key();
         switch (c){
             case 'c':
@@ -219,16 +218,15 @@ void philosophers() {
                 sys_print_all_procceses();
                 break;
         }
-        
     }
 }
 
-int min(int a, int b) { //hacer inline
-    if (a > b) return b;
-    return a;
+int min(int a, int b){
+        if(a < b) return a;
+        return b;
 }
 
 int max(int a, int b){
-    if(a > b) return a;
-    return b;
+        if(a < b) return b;
+        return a;
 }
