@@ -25,11 +25,7 @@ void create_philosopher(){
         arg->ph_id=ph_id;
 	    philo_process[ph_id]=sys_create_args_process(philosopher,philo_name,BACKGROUND,1,(void**)arg);
         ph_id++;
-        // print_f("ID: ");
-        // for(int i=0;i<MAXPHILO;i++){
-        //     print_f("%d, ",philo_process[i]);
-        // }
-        // print_f("\n");
+        
     }
 }
 
@@ -48,19 +44,11 @@ void delete_philosopher(){
 	    ph_count--;
         ph_id--;
 
-        //print_f("Delete:\nID:%d PhiloProcess: %d\n",ph_id,philo_process[ph_id]);
 
 
         sys_kill_process(philo_process[ph_id]);
 
-        // print_f("ID: ");
-        // for(int i=0;i<MAXPHILO;i++){
-        //     print_f("%d, ",philo_process[i]);
-        // }
-        // print_f("\n");
-
-        // sys_print_all_procceses();
-        // print_f("\n");
+    
 }
 
 void test(int id) { 
@@ -167,8 +155,7 @@ void philosophers() {
 	ph_id = 0; 
     ph_mutex=0;
     int running=1;
-    // int create_process; ver!
-    // int delete_process;
+    
     
     for(int i=0;i<MAXPHILO;i++){
         forkState[i]=MAXPHILO;
@@ -191,8 +178,7 @@ void philosophers() {
             case 'c':
                 if(ph_count<MAXPHILO){
                     create_philosopher();
-                    // sys_print_all_procceses();
-                    // print_f("\n");
+                    
                 }
                 break;
             case 'd':
@@ -200,7 +186,6 @@ void philosophers() {
                 break;
             case 'q':
                 running=0;
-                print_f("QUIT\n");
                 while (ph_count>0) delete_philosopher();
                 sys_print_all_procceses();
                 break;
