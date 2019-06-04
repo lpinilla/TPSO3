@@ -16,11 +16,14 @@ sudo ./docker.sh <username>
 ```
 help
 
-## Para correr los tests del mem_manager:
+```
 
+## Para correr los tests del mem_manager:
+```
 1 - Localizarse en la carpeta Tests
 2 - Correr el comando "sudo make test"
 ```
+
 
 ## Autores
 - Lautaro Pinilla
