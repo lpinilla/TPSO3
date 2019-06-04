@@ -122,6 +122,9 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
       case NEW_PROCESS_ARGS:
         return (uint64_t)new_process_args(rsi, (char *)rdx, (int)rcx, 1, (int)r8, (void **)r9);
         break;
+      case RESET_X_CURSOR:
+        reset_x_cursor();
+        break;
   }
 	return 0;
 }

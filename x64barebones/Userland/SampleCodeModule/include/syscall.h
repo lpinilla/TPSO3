@@ -49,5 +49,6 @@ int sys_delete_file(char * path);
 void sys_read_fd(int fd, char * buff, int q);
 void sys_write_fd(int fd, char * buff, int q);
 int sys_create_args_process(void * function, char * name, pground_t process_ground, int argc, void ** argv);
+void sys_reset_x_cursor();
 
 #endif

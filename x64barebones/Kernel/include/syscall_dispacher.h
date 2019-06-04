@@ -59,6 +59,7 @@
 #define READ_FD 44
 #define WRITE_FD 45
 #define NEW_PROCESS_ARGS 46
+#define RESET_X_CURSOR 47
 
 //si pongo #include <mem_manager.h> se rompe
 void * mem_alloc(size_t size);

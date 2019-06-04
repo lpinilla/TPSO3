@@ -75,7 +75,7 @@ void test(int id) {
         
   
         sys_sleep(5); 
-        print_ph_state();
+        //print_ph_state();
   
         //sem_post(semaphores[id]) has no effect during takefork 
         // used to wake up hungry philosophers during putfork 
@@ -91,7 +91,7 @@ void take_fork(int id)
     // state that hungry 
     state[id] = HUNGRY;  
 
-    print_ph_state();
+    //print_ph_state();
 
     // eat if neighbours are not eating 
     test(id); 
@@ -113,7 +113,7 @@ void put_fork(int id)
     forkState[left(id)]=MAXPHILO;
     forkState[id]=MAXPHILO;
     
-    print_ph_state();
+    //print_ph_state();
            
 
     test(left(id));
@@ -176,45 +176,32 @@ void philosophers() {
     sys_clear_console();
 
     
-	print_f("Press 'c' to create a new philosopher.\n");
+	/*print_f("Press 'c' to create a new philosopher.\n");
     print_f("Press 'd' to delete one philosopher.\n");
-    print_f("Press 'q' to quit dining philosophers\n");
-    //sys_create_process(print_ui, "uicomensales", FOREGROUND);
+    print_f("Press 'q' to quit dining philosophers\n");*/
 
     create_philosopher();
-    sys_sleep(3);
     create_philosopher();
-    sys_sleep(3);
     create_philosopher();
-    sys_sleep(3);
-    create_philosopher();
-    sys_sleep(3);
 
+    sys_create_process(print_ui,"uicomensales", FOREGROUND);
     while(running){
         c=get_key();
         switch (c){
             case 'c':
                 if(ph_count<MAXPHILO){
                     create_philosopher();
-                                    // sys_print_all_procceses();
-                                    // print_f("\n");
-
-
+                    // sys_print_all_procceses();
+                    // print_f("\n");
                 }
                 break;
-
             case 'd':
-                if(ph_count>0){
-                    delete_philosopher();
-
-                }
+                if(ph_count>0) delete_philosopher();
                 break;
             case 'q':
                 running=0;
                 print_f("QUIT\n");
-                while (ph_count>0){
-                    delete_philosopher();
-                }
+                while (ph_count>0) delete_philosopher();
                 sys_print_all_procceses();
                 break;
         }

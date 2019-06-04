@@ -25,6 +25,10 @@ void reset_cursor(){
   y_cursor = CHAR_HEIGHT;
 }
 
+void reset_x_cursor(){
+  x_cursor = 0;
+}
+
 
 //-----------------------------------------------------------------ESCRITURA
 

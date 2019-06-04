@@ -75,6 +75,7 @@ int get_x_res(void);
 int get_y_res(void);
 void clear_shadow_buffer(void);
 void reset_cursor(void);
+void reset_x_cursor(void);
 
 
 #endif
