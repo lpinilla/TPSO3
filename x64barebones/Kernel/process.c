@@ -102,6 +102,7 @@ process_t create_process_args(uint64_t process_start, char * process_name, int a
 	new_process->stack_start = (uint64_t)mem_alloc(STACK_SIZE);
     new_process->stack_pointer = init_stack_args(new_process, process_start, new_process->stack_start, argc, argv);
 	new_process->priority = priority;
+	init_fds(new_process);
 	if(global_pid != 0){
 		new_process->ppid = get_current_process()->pid;
 	}

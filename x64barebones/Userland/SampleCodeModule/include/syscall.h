@@ -7,7 +7,7 @@
 
 typedef enum {P_READY, P_RUNNING, P_WAITING, P_TERMINATE} pstate_t;
 typedef enum {BACKGROUND, FOREGROUND} pground_t;
-typedef enum {PRIORITY_1=1, PRIORITY_2, PRIORITY_3, PRIORITY_4} ppriority_t;
+typedef enum {PRIORITY_0=0, PRIORITY_1, PRIORITY_2} ppriority_t;
 typedef enum {STDIN=0, STDOUT, STDERR, R_ONLY, W_ONLY} fd_t;
 
 void sys_write(char * string, int size);

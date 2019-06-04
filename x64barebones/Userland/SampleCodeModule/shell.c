@@ -1,10 +1,10 @@
 #include "include/shell.h"
 
 static func execute_command[]={invalid_command,play_pong,show_time,shutdown,make_beep,make_div,ayuda,try_scan_f,try_print_f,try_invalid_function,
-try_processes, ps, try_mutex, try_semaphore, try_alloc, try_ipc, run_prodcons, try_pipe, try_process_args, run_philo, try_pipes};
+try_processes, ps, try_mutex, try_semaphore, try_alloc, try_ipc, run_prodcons, try_pipe, try_process_args, run_philo, try_pipes, try_priorities};
 
 const char * commands[] = {"pong", "time","shutdown","beep","div","help","scan","print","invalid", "processes_test", "ps",
-"mutex_test", "semaphore_test", "alloc_test", "ipc_test", "prodcons", "pipe", "process_args_test","philo", "pipes_test"};
+"mutex_test", "semaphore_test", "alloc_test", "ipc_test", "prodcons", "pipe", "process_args_test","philo", "pipes_test", "priority_test"};
 
 static int command_handler(char * command);
 
@@ -119,6 +119,10 @@ void try_process_args(){
 
 void try_pipes(){
 	pipe_creation_test();
+}
+
+void try_priorities(){
+	priority_test();
 }
 
 void ps(){

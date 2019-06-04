@@ -98,7 +98,6 @@ uint64_t syscall_dispacher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         break;
       case NEW_PROCESS_PRIORITY:
         return (uint64_t)new_process(rsi, (char *)rdx, (int)rcx, (int)r8);
-        break;
       case NICE:
         set_current_process_priority((int)rsi);
         break;
