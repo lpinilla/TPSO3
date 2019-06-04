@@ -4,7 +4,7 @@
 
 typedef struct nodeADT *node_t;
 
-/*
+
 typedef struct nodeADT{
     process_t element;
     node_t next;
@@ -14,17 +14,18 @@ typedef struct semaphoreADT{
     char * name[MAX_SEMAPHORE_NAME];
     int sid;
     int value;
+    int lock;
     node_t first_waiting_process;
     node_t last_waiting_process;
 } semaphoreADT;
-*/
 
-typedef struct semaphoreADT {
-    char * name[MAX_SEMAPHORE_NAME];
-    int sid;
-    int value;
-    queue_t waiting_processes;
-} semaphoreADT;
+
+// typedef struct semaphoreADT {
+//     char * name[MAX_SEMAPHORE_NAME];
+//     int sid;
+//     int value;
+//     queue_t waiting_processes;
+// } semaphoreADT;
 
 typedef struct semaphoreADT * semaphore_t;
 
@@ -51,11 +52,12 @@ int my_sem_open(char * name){
     str_cpy(name, (char *)new_semaphore->name);
     new_semaphore->sid = global_sid;
     new_semaphore->value = 0;
-    /*
+    new_semaphore->lock = 0;
+    
     new_semaphore->first_waiting_process = NULL;
     new_semaphore->last_waiting_process = NULL;
-    */
-    new_semaphore->waiting_processes=new_queue();
+    
+    //new_semaphore->waiting_processes=new_queue();
 
     all_semaphores[global_sid++] = new_semaphore;
 
@@ -65,7 +67,7 @@ int my_sem_open(char * name){
 int my_sem_close(int sid){
     semaphore_t semaphore = all_semaphores[sid];
     all_semaphores[sid] = NULL;
-    /*
+    
     if(semaphore->first_waiting_process != NULL){
 
         node_t aux2, aux = semaphore->first_waiting_process;
@@ -83,20 +85,21 @@ int my_sem_close(int sid){
         free_mem(semaphore);
         return 0;
     }
-    */
-    if(get_queue_size(semaphore->waiting_processes)>0){
-        do{
-            dequeue(semaphore->waiting_processes);
-        }while(get_queue_size(semaphore->waiting_processes)>0);
-    }
-    free_queue(semaphore->waiting_processes);
-    free_mem(semaphore);
-    return 1;
+    
+    // if(get_queue_size(semaphore->waiting_processes)>0){
+    //     do{
+    //         dequeue(semaphore->waiting_processes);
+    //     }while(get_queue_size(semaphore->waiting_processes)>0);
+    // }
+    // free_queue(semaphore->waiting_processes);
+    // free_mem(semaphore);
+    //return 1;
 }
 
 int my_sem_post(int sid){
     semaphore_t semaphore = all_semaphores[sid];
-    /*
+    
+    
     if(semaphore->value <= 0){
         node_t aux = semaphore->first_waiting_process;
         if(aux != NULL){
@@ -114,20 +117,20 @@ int my_sem_post(int sid){
     }
     semaphore->value++;
     return semaphore->value;
-    */
-    if(semaphore->value <= 0){
-        if(get_queue_size(semaphore->waiting_processes)>0){
-            process_t aux = dequeue(semaphore->waiting_processes);
-            set_state(aux, P_READY);
-        }
-    }
-    semaphore->value++;
-    return semaphore->value;
+    
+    // if(semaphore->value <= 0){
+    //     if(get_queue_size(semaphore->waiting_processes)>0){
+    //         process_t aux = dequeue(semaphore->waiting_processes);
+    //         set_state(aux, P_READY);
+    //     }
+    // }
+    // semaphore->value++;
+    // return semaphore->value;
 }
 
 int my_sem_wait(int sid){
     semaphore_t semaphore = all_semaphores[sid];
-    /*
+    
     if(semaphore->value <= 0){
         semaphore->value = 0;
 
@@ -146,16 +149,16 @@ int my_sem_wait(int sid){
     }
     semaphore->value--;
     return semaphore->value;
-    */
-    if(semaphore->value <= 0) {
-        semaphore->value = 0;
-        process_t aux = get_current_process();
-        set_state(aux, P_WAITING);
-        enqueue(semaphore->waiting_processes, aux);
-        _context_switch_process();
-    }
-    semaphore->value--;
-    return semaphore->value;
+    
+    // if(semaphore->value <= 0) {
+    //     semaphore->value = 0;
+    //     process_t aux = get_current_process();
+    //     set_state(aux, P_WAITING);
+    //     enqueue(semaphore->waiting_processes, aux);
+    //     _context_switch_process();
+    // }
+    // semaphore->value--;
+    // return semaphore->value;
 }
 
 int my_sem_get_value(int sid){

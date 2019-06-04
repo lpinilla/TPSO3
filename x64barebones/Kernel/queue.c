@@ -47,7 +47,7 @@ void * dequeue(queue_t queue){
     node_t aux_node = queue->head;
     void * aux_elem = aux_node->elem;
     queue->head=queue->head->next;
-    //free_mem(aux_node);
+    free_mem(aux_node);
     queue->size = queue->size - 1;
     return aux_elem;
 }
