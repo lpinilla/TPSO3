@@ -15,6 +15,11 @@ sudo ./docker.sh <username>
 ## Desde el sistema ejecutar el siguiente comando para ver utilidades:
 ```
 help
+
+## Para correr los tests del mem_manager:
+
+1 - Localizarse en la carpeta Tests
+2 - Correr el comando "sudo make test"
 ```
 
 ## Autores
